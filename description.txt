@@ -1,0 +1,1 @@
+A list of permanent consumables and whether they've been used.

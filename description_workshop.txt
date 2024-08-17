@@ -1,0 +1,12 @@
+﻿Munchies - the Permanent Consumables checklist
+
+This list contains all of the permanent unlock consumable items in the game.
+
+[b]The default keybind is K, this can be changed in the controls menu[/b]
+
+The white text items are those that affect each player individually. These are available in all worlds.
+
+The orange text items are also player-dependent; however, they are only available on expert or master mode worlds.
+In regular worlds, these items are greyed out instead.
+
+The pink items are only able to be consumed once per world, regardless of which character used them.

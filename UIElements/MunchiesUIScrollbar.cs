@@ -1,0 +1,50 @@
+﻿using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameContent.UI.Elements;
+using Terraria.UI;
+
+namespace Munchies.UIElements
+{
+    internal class MunchiesUIScrollbar : UIScrollbar {
+		protected override void DrawSelf(SpriteBatch spriteBatch) {
+			UserInterface temp = UserInterface.ActiveInstance;
+			UserInterface.ActiveInstance = ReportUISystem._reportUI;
+			base.DrawSelf(spriteBatch);
+			UserInterface.ActiveInstance = temp;
+		}
+
+		public override void LeftMouseDown(UIMouseEvent evt) {
+			UserInterface temp = UserInterface.ActiveInstance;
+			UserInterface.ActiveInstance = ReportUISystem._reportUI;
+			base.LeftMouseDown(evt);
+			UserInterface.ActiveInstance = temp;
+		}
+
+		public override void ScrollWheel(UIScrollWheelEvent evt) {
+			base.ScrollWheel(evt);
+			if (this.Parent != null && this.Parent.IsMouseHovering)
+				this.ViewPosition -= (float)evt.ScrollWheelValue / 5; // hovering over the scroll bar will make the scoll slower
+		}
+	}
+
+	internal class LogScrollbar : UIScrollbar {
+		protected override void DrawSelf(SpriteBatch spriteBatch) {
+			UserInterface temp = UserInterface.ActiveInstance;
+			UserInterface.ActiveInstance = ReportUISystem._reportUI;
+			base.DrawSelf(spriteBatch);
+			UserInterface.ActiveInstance = temp;
+		}
+
+		public override void LeftMouseDown(UIMouseEvent evt) {
+			UserInterface temp = UserInterface.ActiveInstance;
+			UserInterface.ActiveInstance = ReportUISystem._reportUI;
+			base.LeftMouseDown(evt);
+			UserInterface.ActiveInstance = temp;
+		}
+
+		public override void ScrollWheel(UIScrollWheelEvent evt) {
+			base.ScrollWheel(evt);
+			if (this.Parent != null && this.Parent.IsMouseHovering)
+				this.ViewPosition -= (float)evt.ScrollWheelValue / 5; // hovering over the scroll bar will make the scoll slower
+		}
+	}
+}
