@@ -1,6 +1,6 @@
 ﻿Munchies - the Permanent Consumables checklist
 
-This list contains all of the permanent unlock consumable items in the game.
+This list contains all of the permanent unlock consumable items in Vanilla. [i]Mod support will be introduced over time. It is a very manual process for me to support other mods, so I cannot guarantee this will go quickly.[/i]
 
 [b]The default keybind is K, this can be changed in the controls menu[/b]
 
