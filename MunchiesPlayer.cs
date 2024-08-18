@@ -13,18 +13,17 @@ namespace Munchies
     class MunchiesPlayer : ModPlayer {
 		public override void ProcessTriggers(TriggersSet triggerSet) {
 			if (Munchies.ToggleReportHotKey.JustPressed) {
-				if (!ReportUI.Visible) {
-					//Munchies.report.updateInfo();
-					ReportUISystem.Instance.ReportUI.AddConsumablesToList();
-					Main.playerInventory = false; // hide the player inventory
-				}
-				ReportUI.Visible = !ReportUI.Visible;
+				// toggle visibility for hotkey
+				ReportUI.SetVisible(!ReportUI.Visible);
+			} else if (triggerSet.Inventory && !Main.playerInventory && ReportUI.Visible) {
+				// close if inventory is opened
+				ReportUI.SetVisible(false, playCloseSound: false);
 			}
 		}
 
 		public override void OnEnterWorld() {
 			//base.OnEnterWorld();
-			ReportUI.Visible = false;
+			ReportUI.SetVisible(false);
 		}
 	}
 }

@@ -1,11 +1,7 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models;
 using ReLogic.Content;
-using ReLogic.Graphics;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
@@ -13,7 +9,9 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
-using static System.Net.Mime.MediaTypeNames;
+using Munchies.ModSupport;
+using Terraria.GameInput;
+using Newtonsoft.Json.Linq;
 
 namespace Munchies.UIElements {
 	class ReportUI : UIState {
@@ -26,14 +24,30 @@ namespace Munchies.UIElements {
 		readonly float panelHeight = 500f;
 		readonly float panelHeightFromScreenHeight = -400f;
 
-		public static bool Visible {
-			get { return ReportUISystem._reportUI.CurrentState == ReportUISystem.Instance.ReportUI; }
-			set {
-				if (value) SoundEngine.PlaySound(SoundID.MenuOpen);
-				else SoundEngine.PlaySound(SoundID.MenuClose);
+		public int totalTabs => Report.ModConsumables.Count > 0 ? Report.ModConsumables.Count + 1 : 1;
 
-				ReportUISystem._reportUI.SetState(value ? ReportUISystem.Instance.ReportUI : null);
-			}
+		//public static bool Visible {
+		//	get { return ReportUISystem._reportUI.CurrentState == ReportUISystem.Instance.ReportUI; }
+		//	set {
+		//		if (value == Visible) return; // ensure we're only running code if the value is changing
+
+		//		if (value) SoundEngine.PlaySound(SoundID.MenuOpen);
+		//		else if(!value && Main.playerInventory) SoundEngine.PlaySound(SoundID.MenuClose);
+
+		//		ReportUISystem._reportUI.SetState(value ? ReportUISystem.Instance.ReportUI : null);
+		//	}
+		//}
+
+		public static bool Visible => ReportUISystem._reportUI.CurrentState == ReportUISystem.Instance.ReportUI;
+		public static void SetVisible(bool newValue, bool playCloseSound = true) {
+			if (newValue == Visible) return;
+
+			if (newValue) SoundEngine.PlaySound(SoundID.MenuOpen);
+			else if(!newValue && playCloseSound) SoundEngine.PlaySound(SoundID.MenuClose);
+
+			if (newValue) ReportUISystem.Instance.ReportUI.PresentUI(); // get out of the static context
+
+			ReportUISystem._reportUI.SetState(newValue ? ReportUISystem.Instance.ReportUI : null);
 		}
 
 		public override void Update(GameTime gameTime) {
@@ -44,8 +58,9 @@ namespace Munchies.UIElements {
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			Vector2 MousePosition = new(Main.mouseX, Main.mouseY);
-			if (reportPanel.ContainsPoint(MousePosition)) {
+			if (ContainsPoint(MousePosition)) {
 				Main.player[Main.myPlayer].mouseInterface = true;
+				PlayerInput.LockVanillaMouseScroll("Munchies");
 
 				// Doesn't fully fix problem. Clicks still happen in back to front manner.
 				//Main.HoverItem = new Item();
@@ -117,19 +132,28 @@ namespace Munchies.UIElements {
 		}
 
 		private void CloseButtonClicked(UIMouseEvent evt, UIElement listeningElement) {
-			Visible = false;
+			SetVisible(false);
 		}
 
 		internal void AddConsumablesToList() {
 			//Report.UpdateInfo();
 			reportList.Clear();
-			foreach (Consumable consumable in Report.Consumables) {
-				ReportListItem item = new ReportListItem(consumable);
+			foreach (VanillaConsumable consumable in Report.VanillaConsumables) {
+				ReportListItem item = new(consumable);
 				item.Width.Set(-10f, 1f);
 				item.Height.Set(50, 0);
 				item.Left.Set(10f, 0f);
 				reportList.Add(item);
 			}
+		}
+
+		internal void PresentTabs() {
+
+		}
+
+		public void PresentUI() {
+			AddConsumablesToList();
+			Main.playerInventory = false;
 		}
 	}
 }

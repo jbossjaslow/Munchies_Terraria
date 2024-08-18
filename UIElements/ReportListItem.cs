@@ -14,7 +14,7 @@ using Terraria.UI.Chat;
 
 namespace Munchies.UIElements {
 	public class ReportListItem: UIElement {
-		public readonly Consumable Consumable;
+		public readonly VanillaConsumable Consumable;
 
 		// Maximum width of any of the images
 		private readonly float imageAssetMaxWidth = 36;
@@ -24,7 +24,7 @@ namespace Munchies.UIElements {
 		UIPanel panel;
 		UIText text;
 
-		public ReportListItem(Consumable consumable): base() {
+		public ReportListItem(VanillaConsumable consumable): base() {
 			Consumable = consumable;
 		}
 
@@ -76,7 +76,7 @@ namespace Munchies.UIElements {
 				Main.hoverItemName = Consumable.HoverText;
 			}
 			
-			//if (Consumable.Type == ConsumableType.player_expert && !Main.expertMode) {
+			//if (VanillaConsumable.Type == ConsumableType.player_expert && !Main.expertMode) {
 			//	CalculatedStyle pDim = panel.GetDimensions();
 			//	Terraria.Utils.DrawRectangle(
 			//		sb: spriteBatch,

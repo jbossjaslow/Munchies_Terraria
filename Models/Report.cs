@@ -4,21 +4,23 @@ using System.Linq;
 
 namespace Munchies.Models {
 	public class Report {
-		public static List<Consumable> Consumables = [];
+		public static List<VanillaConsumable> VanillaConsumables = [];
+		// Maps mod name to list of consumables from that mod
+		public static Dictionary<string, List<IConsumable>> ModConsumables = [];
 
 		public Report() {
 			//UpdateInfo();
 
-			Consumables = EnumUtil
+			VanillaConsumables = EnumUtil
 				.AllCases<ConsumableItem>()
-				.Select(i => new Consumable(i))
+				.Select(i => new VanillaConsumable(i))
 				.ToList();
 		}
 
 		//public static void UpdateInfo() {
-		//	Consumables = EnumUtil
+		//	VanillaConsumables = EnumUtil
 		//		.AllCases<ConsumableItem>()
-		//		.Select(i => new Consumable(i))
+		//		.Select(i => new VanillaConsumable(i))
 		//		.ToList();
 		//}
 	}

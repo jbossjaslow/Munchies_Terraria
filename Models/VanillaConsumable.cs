@@ -1,14 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.Utilities.Terraria.Utilities;
 
 namespace Munchies.Models {
-	public class Consumable {
+	public class VanillaConsumable: IConsumable {
+		public string ModTabName => "Terraria";
+		public Asset<Texture2D> ModTabTexture => ModContent.Request<Texture2D>("Terraria/Images/Item_4766");
+
 		public ConsumableItem Item;
 
-		public Consumable(ConsumableItem item) {
+		public VanillaConsumable(ConsumableItem item) {
 			this.Item = item;
 		}
 
@@ -85,6 +91,8 @@ namespace Munchies.Models {
 			_ => throw new System.NotImplementedException(),
 		};
 
+		public Asset<Texture2D> Texture => ModContent.Request<Texture2D>("Terraria/Images/Item_" + AssetPath);
+
 		// "Terraria/Images/Item_" is prefixed before path string
 		public string AssetPath => Item switch {
 			// normal
@@ -151,5 +159,9 @@ namespace Munchies.Models {
 			ConsumableItem.peddlersSatchel => NPC.peddlersSatchelWasUsed,
 			_ => throw new System.NotImplementedException(),
 		};
+
+		bool IConsumable.HasBeenConsumed() {
+			return HasBeenConsumed;
+		}
 	}
 }
