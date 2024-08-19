@@ -30,7 +30,7 @@ namespace Munchies.Models {
 
 		public static bool AddModtoList(IConsumableMod mod) {
 			foreach (ConsumablesEntry entry in ConsumablesList) {
-				if (entry.Mod == mod) {
+				if (entry.Mod.ModTabName == mod.ModTabName) {
 					return false;
 				}
 			}

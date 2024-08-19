@@ -29,6 +29,13 @@ namespace Munchies
 			ToggleReportHotKey = null;
 		}
 
+		// How to add external content to the list: do the following in YOUR mod in PostSetupContent
+		//Mod munchiesMod = ModLoader.GetMod("Munchies");
+		//if (munchiesMod != null)
+		//{
+		//	munchiesMod.Call(<arguments array>);
+		//}
+
 		/*
 		 * 0: Function: AddMod => string
 		 * 0: Mod tab name => string

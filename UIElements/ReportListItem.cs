@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
@@ -15,6 +16,10 @@ namespace Munchies.UIElements {
 		private readonly float imageAssetMaxWidth = 36;
 		private readonly float spacing = 10;
 		public static Asset<Texture2D> CheckMarkTexture;
+		private bool UsingMissingTexture = false;
+		private string HoverText() {
+			return UsingMissingTexture ? "[MISSING TEXTURE] " + Consumable.HoverText : Consumable.HoverText;
+		}
 
 		UIPanel panel;
 		UIText text;
@@ -27,11 +32,11 @@ namespace Munchies.UIElements {
 			panel.SetPadding(0);
 			Append(panel);
 
-			Asset<Texture2D> consumableTexture = ModContent.Request<Texture2D>(Consumable.TexturePath);
-			UIImage itemImage = new(consumableTexture);
+			//Asset<Texture2D> consumableTexture = ModContent.Request<Texture2D>(Consumable.TexturePath);
+			UIImage itemImage = new(GetTexture());
 			itemImage.Left.Set(spacing, 0);
-			itemImage.Width.Set(Consumable.AssetDimensions.X, 0f);
-			itemImage.Height.Set(Consumable.AssetDimensions.Y, 0f);
+			itemImage.Width.Set(UsingMissingTexture ? 6 : Consumable.AssetDimensions.X, 0f);
+			itemImage.Height.Set(UsingMissingTexture ? 16 : Consumable.AssetDimensions.Y, 0f);
 			itemImage.SetPadding(0);
 			itemImage.VAlign = 0.5f;
 			panel.Append(itemImage);
@@ -61,10 +66,20 @@ namespace Munchies.UIElements {
 			panel.Append(text);
 		}
 
+		private Asset<Texture2D> GetTexture() {
+			try {
+				return ModContent.Request<Texture2D>(Consumable.TexturePath);
+			} catch (Exception e) {
+				UsingMissingTexture = true;
+				//Munchies.instance.Logger.Error($"Error getting consumable texture: {e.StackTrace} {e.Message}");
+				return ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
+			}
+		}
+
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			base.DrawSelf(spriteBatch);
 			if (panel?.IsMouseHovering ?? false) {
-				Main.hoverItemName = Consumable.HoverText;
+				Main.hoverItemName = HoverText();
 			}
 		}
 

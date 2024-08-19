@@ -1,1 +1,4 @@
-﻿Added support for Calamity
+﻿Added support for External mods
+
+Developers can add consumable items (and their accompanying mods) to the list using Calls
+See Munchies.cs for more info

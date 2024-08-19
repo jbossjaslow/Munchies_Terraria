@@ -1,6 +1,6 @@
-﻿Munchies - the Permanent Consumables checklist
+﻿[h1]Munchies - The Permanent Consumables Checklist[/h1]
 
-This list contains all of the permanent unlock consumable items in Vanilla. [i]Mod support will be introduced over time. It is a very manual process for me to support other mods, so I cannot guarantee this will go quickly.[/i]
+This list contains all of the permanent unlock consumable items in Vanilla.
 
 [b]The default keybind is K, this can be changed in the controls menu[/b]
 
@@ -11,3 +11,8 @@ This list contains all of the permanent unlock consumable items in Vanilla. [i]M
 
 [*]The pink items are only able to be consumed once per world, regardless of which character used them.
 [/list]
+
+[h2]Mod Support[/h2]
+Mod support has been added via Calls. This means that developers can call into Munchies to add their content to this mod. This is the easiest and most extensible approach. If you want your favorite mod to show up here, reach out to the developer and ask them to add support!
+
+Devs can also write mods specifically to add mod support. Currently, I am working on an addon mod to support Calamity, since I do not know when they will support my mod and I want to see those consumables. I will get to other mods in the future, but no timeline has been established yet.
