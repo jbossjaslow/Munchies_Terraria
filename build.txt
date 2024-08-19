@@ -1,6 +1,6 @@
 displayName = Munchies - Consumables Checklist
 author = Jboss
-version = 1.0.1
+version = 1.1.0
 side = Client
 buildIgnore = terraria_mod_border.xcf
 homepage = "https://github.com/jbossjaslow/Munchies_Terraria"

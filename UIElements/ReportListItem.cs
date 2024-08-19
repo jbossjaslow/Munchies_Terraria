@@ -2,19 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models;
 using ReLogic.Content;
-using Steamworks;
-using System;
-using System.Drawing.Drawing2D;
 using Terraria;
-using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
-using Terraria.UI.Chat;
 
 namespace Munchies.UIElements {
-	public class ReportListItem: UIElement {
-		public readonly VanillaConsumable Consumable;
+	public class ReportListItem(IConsumable consumable) : UIElement() {
+		public readonly IConsumable Consumable = consumable;
 
 		// Maximum width of any of the images
 		private readonly float imageAssetMaxWidth = 36;
@@ -24,19 +19,15 @@ namespace Munchies.UIElements {
 		UIPanel panel;
 		UIText text;
 
-		public ReportListItem(VanillaConsumable consumable): base() {
-			Consumable = consumable;
-		}
-
 		public override void OnInitialize() {
-			panel = new();
-			panel.Width.Pixels = GetDimensions().Width;
-			panel.Height = StyleDimension.Fill;
+			panel = new() {
+				Width = StyleDimension.Fill,
+				Height = StyleDimension.Fill
+			};
 			panel.SetPadding(0);
 			Append(panel);
 
-			string consumableTexturePath = "Terraria/Images/Item_" + Consumable.AssetPath;
-			Asset<Texture2D> consumableTexture = ModContent.Request<Texture2D>(consumableTexturePath);
+			Asset<Texture2D> consumableTexture = ModContent.Request<Texture2D>(Consumable.TexturePath);
 			UIImage itemImage = new(consumableTexture);
 			itemImage.Left.Set(spacing, 0);
 			itemImage.Width.Set(Consumable.AssetDimensions.X, 0f);
@@ -52,12 +43,12 @@ namespace Munchies.UIElements {
 			checkMarkImage.SetPadding(0);
 			checkMarkImage.VAlign = 0.5f;
 			checkMarkImage.Color = Color.SpringGreen;
-			if (Consumable.HasBeenConsumed) {
+			if (Consumable.HasBeenConsumed()) {
 				panel.Append(checkMarkImage);
 			}
 
 			text = new(text: Consumable.DisplayText) {
-				TextColor = Consumable.DisplayTextColor,
+				TextColor = DisplayTextColor,
 				ShadowColor = Color.Black,
 				IsWrapped = false,
 				WrappedTextBottomPadding = 0f,
@@ -72,21 +63,16 @@ namespace Munchies.UIElements {
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			base.DrawSelf(spriteBatch);
-			if (panel.IsMouseHovering) {
+			if (panel?.IsMouseHovering ?? false) {
 				Main.hoverItemName = Consumable.HoverText;
 			}
-			
-			//if (VanillaConsumable.Type == ConsumableType.player_expert && !Main.expertMode) {
-			//	CalculatedStyle pDim = panel.GetDimensions();
-			//	Terraria.Utils.DrawRectangle(
-			//		sb: spriteBatch,
-			//		start: new(x: pDim.X, y: (pDim.Height / 2) - 3),
-			//		end: new(x: pDim.X + pDim.Width, y: (pDim.Height / 2) + 3),
-			//		colorStart: Color.Red,
-			//		colorEnd: Color.Green,
-			//		width: 50
-			//	);
-			//}
 		}
+
+		private Color DisplayTextColor => Consumable.Type switch {
+			ConsumableType.player_normal => Color.White,
+			ConsumableType.player_expert => Main.expertMode ? Color.Orange : Color.Gray,
+			ConsumableType.world => new Color(r: 242, g: 111, b: 238),
+			_ => throw new System.NotImplementedException(),
+		};
 	}
 }

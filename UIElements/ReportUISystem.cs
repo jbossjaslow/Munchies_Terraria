@@ -49,10 +49,5 @@ namespace Munchies.UIElements {
 				);
 			}
 		}
-
-		//public void PresentReportUI() {
-		//	ReportUI.AddConsumablesToList();
-		//	Main.playerInventory = false;
-		//}
 	}
 }

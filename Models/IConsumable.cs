@@ -8,13 +8,26 @@ using System.Threading.Tasks;
 
 namespace Munchies.Models {
 	public interface IConsumable {
-		string ModTabName { get; }
-		Asset<Texture2D> ModTabTexture { get; }
 		string DisplayText { get; }
-		Asset<Texture2D> Texture { get; }
+		string TexturePath { get; }
+		(float X, float Y) AssetDimensions { get; }
 		string HoverText {  get; }
 		ConsumableType Type { get; }
-		bool HasBeenConsumed();
-
+		Func<bool> HasBeenConsumed { get; }
 	}
+
+	public interface IConsumableMod {
+		string ModTabName { get; }
+		string ModTabTexturePath { get; }
+	}
+
+	//public class TestConsumableMod : IConsumableMod {
+	//	public string ModTabName => "Test Mod";
+
+	//	public string ModTabTexturePath() {
+	//		return "Terraria/Images/Item_4760";
+	//	}
+
+	//	public TestConsumableMod() { }
+	//}
 }

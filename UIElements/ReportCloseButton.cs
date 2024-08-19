@@ -1,7 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
+using Terraria.UI;
 
 namespace Munchies.UIElements {
 	// This ExampleUIHoverImageButton class inherits from UIImageButton. 

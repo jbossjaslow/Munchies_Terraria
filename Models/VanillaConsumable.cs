@@ -8,10 +8,7 @@ using Terraria.ModLoader;
 using Terraria.Utilities.Terraria.Utilities;
 
 namespace Munchies.Models {
-	public class VanillaConsumable: IConsumable {
-		public string ModTabName => "Terraria";
-		public Asset<Texture2D> ModTabTexture => ModContent.Request<Texture2D>("Terraria/Images/Item_4766");
-
+	public class VanillaConsumable : IConsumable {
 		public ConsumableItem Item;
 
 		public VanillaConsumable(ConsumableItem item) {
@@ -40,12 +37,12 @@ namespace Munchies.Models {
 			_ => throw new System.NotImplementedException(),
 		};
 
-		public Color DisplayTextColor => Type switch {
-			ConsumableType.player_normal => Color.White,
-			ConsumableType.player_expert => Main.expertMode ? Color.Orange : Color.Gray,
-			ConsumableType.world => new Color(r: 242, g: 111, b: 238),
-			_ => throw new System.NotImplementedException(),
-		};
+		//public Color DisplayTextColor => Type switch {
+		//	ConsumableType.player_normal => Color.White,
+		//	ConsumableType.player_expert => Main.expertMode ? Color.Orange : Color.Gray,
+		//	ConsumableType.world => new Color(r: 242, g: 111, b: 238),
+		//	_ => throw new System.NotImplementedException(),
+		//};
 
 		public string DisplayText => Item switch {
 			// normal
@@ -91,7 +88,7 @@ namespace Munchies.Models {
 			_ => throw new System.NotImplementedException(),
 		};
 
-		public Asset<Texture2D> Texture => ModContent.Request<Texture2D>("Terraria/Images/Item_" + AssetPath);
+		public string TexturePath => "Terraria/Images/Item_" + AssetPath;
 
 		// "Terraria/Images/Item_" is prefixed before path string
 		public string AssetPath => Item switch {
@@ -138,30 +135,30 @@ namespace Munchies.Models {
 			_ => throw new System.NotImplementedException(),
 		};
 
-		public bool HasBeenConsumed => Item switch {
-			// normal
-			ConsumableItem.artisanLoaf => Main.LocalPlayer.ateArtisanBread,
-			ConsumableItem.torchGod => Main.LocalPlayer.unlockedBiomeTorches,
-			ConsumableItem.vitalCrystal => Main.LocalPlayer.usedAegisCrystal,
-			ConsumableItem.aegisFruit => Main.LocalPlayer.usedAegisFruit,
-			ConsumableItem.arcaneCrystal => Main.LocalPlayer.usedArcaneCrystal,
-			ConsumableItem.ambrosia => Main.LocalPlayer.usedAmbrosia,
-			ConsumableItem.gummyWorm => Main.LocalPlayer.usedGummyWorm,
-			ConsumableItem.galaxyPearl => Main.LocalPlayer.usedGalaxyPearl,
+		public bool _HasBeenConsumed() {
+			return Item switch {
+				// normal
+				ConsumableItem.artisanLoaf => Main.LocalPlayer.ateArtisanBread,
+				ConsumableItem.torchGod => Main.LocalPlayer.unlockedBiomeTorches,
+				ConsumableItem.vitalCrystal => Main.LocalPlayer.usedAegisCrystal,
+				ConsumableItem.aegisFruit => Main.LocalPlayer.usedAegisFruit,
+				ConsumableItem.arcaneCrystal => Main.LocalPlayer.usedArcaneCrystal,
+				ConsumableItem.ambrosia => Main.LocalPlayer.usedAmbrosia,
+				ConsumableItem.gummyWorm => Main.LocalPlayer.usedGummyWorm,
+				ConsumableItem.galaxyPearl => Main.LocalPlayer.usedGalaxyPearl,
 
-			// expert
-			ConsumableItem.demonHeart => Main.LocalPlayer.CanDemonHeartAccessoryBeShown(),
-			ConsumableItem.minecartUpgradeKit => Main.LocalPlayer.unlockedSuperCart,
+				// expert
+				ConsumableItem.demonHeart => Main.LocalPlayer.CanDemonHeartAccessoryBeShown(),
+				ConsumableItem.minecartUpgradeKit => Main.LocalPlayer.unlockedSuperCart,
 
-			// world
-			ConsumableItem.advCombatTech1 => NPC.combatBookWasUsed,
-			ConsumableItem.advCombatTech2 => NPC.combatBookVolumeTwoWasUsed,
-			ConsumableItem.peddlersSatchel => NPC.peddlersSatchelWasUsed,
-			_ => throw new System.NotImplementedException(),
-		};
-
-		bool IConsumable.HasBeenConsumed() {
-			return HasBeenConsumed;
+				// world
+				ConsumableItem.advCombatTech1 => NPC.combatBookWasUsed,
+				ConsumableItem.advCombatTech2 => NPC.combatBookVolumeTwoWasUsed,
+				ConsumableItem.peddlersSatchel => NPC.peddlersSatchelWasUsed,
+				_ => throw new System.NotImplementedException(),
+			};
 		}
+
+		public Func<bool> HasBeenConsumed => _HasBeenConsumed;
 	}
 }

@@ -9,73 +9,100 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
-using Munchies.ModSupport;
 using Terraria.GameInput;
-using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Munchies.UIElements {
 	class ReportUI : UIState {
 		public UIPanel reportPanel;
-		public UIList reportList;
+		public UIList reportList = [];
+		public UIText titleText = new("Consumables");
 		//public UIMessageBox messageBox; // UIMessageBox from BossChecklist
 
 		readonly float spacing = 8f;
 		readonly float panelWidth = 300f;
 		readonly float panelHeight = 500f;
-		readonly float panelHeightFromScreenHeight = -400f;
+		public static readonly float tabSize = 36f;
 
-		public int totalTabs => Report.ModConsumables.Count > 0 ? Report.ModConsumables.Count + 1 : 1;
+		public static readonly Color BackgroundColor = new(73, 94, 171);
 
-		//public static bool Visible {
-		//	get { return ReportUISystem._reportUI.CurrentState == ReportUISystem.Instance.ReportUI; }
-		//	set {
-		//		if (value == Visible) return; // ensure we're only running code if the value is changing
+		private IConsumableMod _currentTab;
+		public IConsumableMod CurrentTab {
+			get { return _currentTab; }
+			set {
+				if (_currentTab == value) return;
 
-		//		if (value) SoundEngine.PlaySound(SoundID.MenuOpen);
-		//		else if(!value && Main.playerInventory) SoundEngine.PlaySound(SoundID.MenuClose);
-
-		//		ReportUISystem._reportUI.SetState(value ? ReportUISystem.Instance.ReportUI : null);
-		//	}
-		//}
+				_currentTab = value;
+				//UpdateConsumablesList();
+			}
+		}
+		public List<ReportTab> tabs = [];
 
 		public static bool Visible => ReportUISystem._reportUI.CurrentState == ReportUISystem.Instance.ReportUI;
 		public static void SetVisible(bool newValue, bool playCloseSound = true) {
 			if (newValue == Visible) return;
 
 			if (newValue) SoundEngine.PlaySound(SoundID.MenuOpen);
-			else if(!newValue && playCloseSound) SoundEngine.PlaySound(SoundID.MenuClose);
+			else if (!newValue && playCloseSound) SoundEngine.PlaySound(SoundID.MenuClose);
 
 			if (newValue) ReportUISystem.Instance.ReportUI.PresentUI(); // get out of the static context
 
 			ReportUISystem._reportUI.SetState(newValue ? ReportUISystem.Instance.ReportUI : null);
 		}
 
-		public override void Update(GameTime gameTime) {
-			base.Update(gameTime);
+		//public override void Update(GameTime gameTime) {
+		//	base.Update(gameTime);
 
-			// do something on update
-		}
+		//	// do something on update
+		//}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			Vector2 MousePosition = new(Main.mouseX, Main.mouseY);
 			if (ContainsPoint(MousePosition)) {
 				Main.player[Main.myPlayer].mouseInterface = true;
 				PlayerInput.LockVanillaMouseScroll("Munchies");
-
-				// Doesn't fully fix problem. Clicks still happen in back to front manner.
-				//Main.HoverItem = new Item();
-				//Main.hoverItemName = "";
 			}
 		}
 
-		public override void OnInitialize() {
+		public void PresentUI() {
+			InitializeUI();
+			//InitializeTabs();
+			UpdateConsumablesList();
+			UpdateSelectedTab();
+			Main.playerInventory = false;
+		}
+
+		//public override void OnInitialize() {
+			////Munchies.report ??= new(); // initialize the report if it is null
+			//CurrentTab = Report.VanillaConsumableMod;
+			////CurrentTab = new TestConsumableMod();
+
+			//InitializePanel();
+
+			//InitializeTitleTextAndCloseButton();
+
+			//InitializeListAndScrollBar();
+
+			////InitializeTabs();
+
+			//Append(reportPanel);
+		//}
+
+		private bool HasBeenInitialized = false;
+		private void InitializeUI() {
+			if (HasBeenInitialized) return;
+			HasBeenInitialized = true;
+			//Munchies.report ??= new(); // initialize the report if it is null
+			CurrentTab = Report.VanillaConsumableMod;
+
 			InitializePanel();
 
 			InitializeTitleTextAndCloseButton();
 
 			InitializeListAndScrollBar();
 
-			Append(reportPanel);
+			InitializeTabs();
 		}
 
 		private void InitializePanel() {
@@ -85,12 +112,13 @@ namespace Munchies.UIElements {
 			reportPanel.VAlign = 0.5f;
 			reportPanel.Width.Set(panelWidth, 0f);
 			reportPanel.Height.Set(panelHeight, 0f);
-			reportPanel.BackgroundColor = new Color(73, 94, 171);
-			//reportPanel.OverflowHidden = false;
+			reportPanel.BackgroundColor = BackgroundColor;
+			Append(reportPanel);
 		}
 
 		private void InitializeTitleTextAndCloseButton() {
-			UIText titleText = new(text: "Consumables", textScale: 1.5f) {
+			string text = Report.ConsumablesList.Count > 1 ? "Terraria" : "Consumables";
+			titleText = new(text: text, textScale: 1.5f) {
 				TextColor = Color.White,
 				ShadowColor = Color.Black,
 				HAlign = 0.5f
@@ -131,29 +159,61 @@ namespace Munchies.UIElements {
 			reportList.SetScrollbar(reportListScrollbar);
 		}
 
+		private void InitializeTabs() {
+			if (Report.ConsumablesList.Count <= 1) return; // don't show tabs if only vanilla
+
+			for (int i = 0; i < Report.ConsumablesList.Count; i++) {
+				ReportTab tab = new(mod: Report.ConsumablesList.ElementAt(i).Mod, index: i, OnSelectTab: OnSelectTab);
+				// All of these have to be set outside, otherwise nothing works
+				tab.Width.Set(tabSize, 0);
+				tab.Height.Set(tabSize, 0);
+				tab.HAlign = 0.5f;
+				tab.VAlign = 0.5f;
+				tab.Top.Set((-panelHeight / 2) - (tabSize * 0.275f), 0);
+				tab.Left.Set((-panelWidth / 2) + (tabSize * 0.5f) + 10 + (tabSize * i), 0);
+				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
+				Append(tab);
+				tabs.Add(tab);
+			}
+		}
+
+		private void UpdateSelectedTab() {
+			if (CurrentTab == null) return;
+
+			foreach(ReportTab tab in tabs) {
+				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
+			}
+		}
+
 		private void CloseButtonClicked(UIMouseEvent evt, UIElement listeningElement) {
 			SetVisible(false);
 		}
 
-		internal void AddConsumablesToList() {
-			//Report.UpdateInfo();
+		private void OnSelectTab(IConsumableMod mod) {
+			if (mod == null || CurrentTab == mod) return;
+
+			CurrentTab = mod;
+			if (Report.ConsumablesList.Count > 1) titleText.SetText(CurrentTab.ModTabName);
+			UpdateConsumablesList();
+			UpdateSelectedTab();
+			SoundEngine.PlaySound(SoundID.Tink);
+		}
+
+		internal void UpdateConsumablesList() {
 			reportList.Clear();
-			foreach (VanillaConsumable consumable in Report.VanillaConsumables) {
+
+			foreach (IConsumable consumable in CurrentConsumables()) {
 				ReportListItem item = new(consumable);
 				item.Width.Set(-10f, 1f);
 				item.Height.Set(50, 0);
 				item.Left.Set(10f, 0f);
 				reportList.Add(item);
 			}
+			reportList.Activate();
 		}
 
-		internal void PresentTabs() {
-
-		}
-
-		public void PresentUI() {
-			AddConsumablesToList();
-			Main.playerInventory = false;
+		private List<IConsumable> CurrentConsumables() {
+			return Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == CurrentTab.ModTabName).Consumables;
 		}
 	}
 }
