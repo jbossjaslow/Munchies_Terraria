@@ -15,4 +15,9 @@ This list contains all of the permanent unlock consumable items in Vanilla.
 [h2]Mod Support[/h2]
 Mod support has been added via Calls. This means that developers can call into Munchies to add their content to this mod. This is the easiest and most extensible approach. If you want your favorite mod to show up here, reach out to the developer and ask them to add support!
 
-Devs can also write mods specifically to add mod support. Currently, I am working on an addon mod to support Calamity, since I do not know when they will support my mod and I want to see those consumables. I will get to other mods in the future, but no timeline has been established yet.
+Devs can also write mods specifically to add mod support. I will get to other addon mods in the future, but no timeline has been established yet.
+[hr][/hr]
+[h3]Current mods:[/h3][list]
+[*] Calamity Addon - Adds support for Calamity https://steamcommunity.com/sharedfiles/filedetails/?id=3312725122
+[/list]
+

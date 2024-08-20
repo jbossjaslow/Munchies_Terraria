@@ -8,11 +8,12 @@ using Terraria.ModLoader;
 using System;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader.UI;
 
 namespace Munchies.UIElements {
-	public class ReportTab(IConsumableMod mod, int index, Action<IConsumableMod> OnSelectTab) : UIElement() {
+	public class ReportTab(ConsumableMod mod, int index, Action<ConsumableMod> OnSelectTab) : UIElement() {
 
-		public readonly IConsumableMod mod = mod;
+		public readonly ConsumableMod mod = mod;
 		//public IConsumableMod selectedMod = selectedMod;
 		public int index = index;
 		public UIPanel panel = new();
@@ -25,15 +26,20 @@ namespace Munchies.UIElements {
 			panel.OnLeftClick += new MouseEvent(OnTabClick);
 			Append(panel);
 
-			Asset<Texture2D> texture = ModContent.Request<Texture2D>(mod.ModTabTexturePath);
-			image = new(texture) {
+			image = new(mod.ModTabTexture) {
 				VAlign = 0.5f,
 				HAlign = 0.5f,
-				ScaleToFit = true,
 			};
 			image.SetPadding(0f);
-			image.Width.Set(-10f, 1f);
-			image.Height.Set(-10f, 1f);
+			if (mod.UsingMissingTexture) {
+				image.Width.Set(6f, 0.5f);
+				image.Height.Set(16f, 0.5f);
+				image.ScaleToFit = false;
+			} else {
+				image.Width.Set(-10f, 1f);
+				image.Height.Set(-10f, 1f);
+				image.ScaleToFit = true;
+			}
 			image.OnMouseOver += new MouseEvent(MyMouseOver);
 			panel.Append(image);
 		}
@@ -45,7 +51,8 @@ namespace Munchies.UIElements {
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			base.DrawSelf(spriteBatch);
 			if (panel.IsMouseHovering) {
-				Main.hoverItemName = mod.ModTabName;
+				//Main.hoverItemName = mod.ModTabName;
+				UICommon.TooltipMouseText(text: HoverText()); // Adds box behind hover text
 			}
 		}
 
@@ -55,6 +62,10 @@ namespace Munchies.UIElements {
 			// 113 minion spawn
 			// npc_hit_5 sparkle
 			// tinks
+		}
+
+		private string HoverText() {
+			return mod.UsingMissingTexture ? "[MISSING TEXTURE] " + mod.ModTabName : mod.ModTabName;
 		}
 	}
 }

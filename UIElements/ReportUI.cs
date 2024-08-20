@@ -27,8 +27,8 @@ namespace Munchies.UIElements {
 
 		public static readonly Color BackgroundColor = new(73, 94, 171);
 
-		private IConsumableMod _currentTab;
-		public IConsumableMod CurrentTab {
+		private ConsumableMod _currentTab;
+		public ConsumableMod CurrentTab {
 			get { return _currentTab; }
 			set {
 				if (_currentTab == value) return;
@@ -189,7 +189,7 @@ namespace Munchies.UIElements {
 			SetVisible(false);
 		}
 
-		private void OnSelectTab(IConsumableMod mod) {
+		private void OnSelectTab(ConsumableMod mod) {
 			if (mod == null || CurrentTab == mod) return;
 
 			CurrentTab = mod;
@@ -202,7 +202,7 @@ namespace Munchies.UIElements {
 		internal void UpdateConsumablesList() {
 			reportList.Clear();
 
-			foreach (IConsumable consumable in CurrentConsumables()) {
+			foreach (Consumable consumable in CurrentConsumables()) {
 				ReportListItem item = new(consumable);
 				item.Width.Set(-10f, 1f);
 				item.Height.Set(50, 0);
@@ -212,7 +212,7 @@ namespace Munchies.UIElements {
 			reportList.Activate();
 		}
 
-		private List<IConsumable> CurrentConsumables() {
+		private List<Consumable> CurrentConsumables() {
 			return Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == CurrentTab.ModTabName).Consumables;
 		}
 	}

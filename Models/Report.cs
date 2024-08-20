@@ -1,24 +1,30 @@
 using Munchies.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.ModLoader;
 
 namespace Munchies.Models {
 	public class Report {
-		public static IConsumableMod VanillaConsumableMod = new VanillaConsumableMod();
-		//public static List<IConsumable> VanillaConsumables = [];
-		// Maps mod name to list of consumables from that mod
-		//public static Dictionary<IConsumableMod, List<IConsumable>> ModConsumablesDict = [];
+		public static ConsumableMod VanillaConsumableMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
 		public static List<ConsumablesEntry> ConsumablesList = [];
 
 		public Report() {
-			List<IConsumable> vanillaConsumables = EnumUtil
+			List<Consumable> vanillaConsumables = EnumUtil
 				.AllCases<ConsumableItem>()
-				.Select(i => (IConsumable)new VanillaConsumable(i))
+				.Select(i => new VanillaConsumable(i))
+				.Select(vc => new Consumable(vc))
 				.ToList();
 
 			ConsumablesList.Add(new(VanillaConsumableMod, vanillaConsumables));
+
+			//public class TestConsumableMod : IConsumableMod {
+			//	public string ModTabName => "Test Mod";
+
+			//	public string ModTabTexturePath() {
+			//		return "Terraria/Images/Item_4760";
+			//	}
+
+			//	public TestConsumableMod() { }
+			//}
 
 			//List<IConsumable> fakeList = [
 			//	new VanillaConsumable(ConsumableItem.minecartUpgradeKit),
@@ -28,7 +34,7 @@ namespace Munchies.Models {
 			//ConsumablesList.Add(new(new TestConsumableMod(), fakeList));
 		}
 
-		public static bool AddModtoList(IConsumableMod mod) {
+		public static bool AddModtoList(ConsumableMod mod) {
 			foreach (ConsumablesEntry entry in ConsumablesList) {
 				if (entry.Mod.ModTabName == mod.ModTabName) {
 					return false;
@@ -41,11 +47,11 @@ namespace Munchies.Models {
 			return true;
 		}
 
-		public static bool AddConsumableToList(string modName, IConsumable consumable) {
+		public static bool AddConsumableToList(string modName, Consumable consumable) {
 			foreach (ConsumablesEntry entry in ConsumablesList) {
 				if (entry.Mod.ModTabName == modName) {
 					// mod exists
-					foreach (IConsumable c in entry.Consumables) {
+					foreach (Consumable c in entry.Consumables) {
 						if (c.DisplayText == consumable.DisplayText) {
 							// consumable already exists, exit
 							return false;
@@ -61,10 +67,5 @@ namespace Munchies.Models {
 			// mod doesn't exist, exit
 			return false;
 		}
-	}
-
-	public class ConsumablesEntry(IConsumableMod mod, List<IConsumable> consumables) {
-		public IConsumableMod Mod = mod;
-		public List<IConsumable> Consumables = consumables;
 	}
 }

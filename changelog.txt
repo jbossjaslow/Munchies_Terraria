@@ -1,4 +1,8 @@
-﻿Added support for External mods
+﻿Improved support for External Mods
+
+Simplified texture loading to improve performance
+Added support for custom text colors instead of the predefined Normal/Expert/World category colors from Vanilla
+Added boxes behind hover text for easier reading
 
 Developers can add consumable items (and their accompanying mods) to the list using Calls
 See Munchies.cs for more info

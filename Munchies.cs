@@ -1,6 +1,6 @@
 using Munchies.Models;
-using Munchies.ModSupport;
 using System;
+using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 
 namespace Munchies
@@ -37,6 +37,27 @@ namespace Munchies
 		//}
 
 		/*
+		 * string[] args = {
+				"AddMod",
+				"Calamity",
+				"CalamityMod/icon_small"
+			};
+			munchiesMod.Call(args);
+		 * object[] bloodOrangeArgs = {
+				"AddConsumable",
+				"Calamity",
+				"Blood Orange",
+				"CalamityMod/Items/PermanentBoosters/BloodOrange",
+				"Increases max health by 25 if user has at least 500 HP",
+				"player_normal",
+				new Func<bool>(GetBOrange),
+				"38",
+				"40"
+			};
+			munchiesMod.Call(bloodOrangeArgs);
+		 * 
+
+		/*
 		 * 0: Function: AddMod => string
 		 * 0: Mod tab name => string
 		 * 1: Mod tab texture => string
@@ -46,7 +67,7 @@ namespace Munchies
 		 * 2: Consumable name => string
 		 * 3: Consumable texture => string
 		 * 4: Consumable hover text => string
-		 * 5: Consumable type => string
+		 * 5: Consumable type => string OR a Color object
 		 * 6: Consumable hasBeenConsumed => Func<bool>
 		 * 7: Asset dimensions X => float
 		 * 8: Asset dimensions Y => float
@@ -70,7 +91,7 @@ namespace Munchies
 
 		private bool HandleAddMod(params object[] args) {
 			if (args.Length == 3) {
-				IConsumableMod mod = new ExternalMod(modTabName: args[1] as string, modTabTexturePath: args[2] as string);
+				ConsumableMod mod = new(modTabName: args[1] as string, modTabTexturePath: args[2] as string);
 
 				return Report.AddModtoList(mod);
 			} else {
@@ -80,20 +101,40 @@ namespace Munchies
 
 		private bool HandleAddConsumable(params object[] args) {
 			if (args.Length == 9) {
+				Consumable consumable;
 				(float X, float Y) assetDims = (X: float.Parse(args[7] as string), Y: float.Parse(args[8] as string));
-				IConsumable consumable = new ExternalConsumable(displayText: args[2] as string, texturePath: args[3] as string, assetDimensions: assetDims, hoverText: args[4] as string, type: GetType(type: args[5] as string), hasBeenConsumed: args[6] as Func<bool>);
+
+				if (args[5] is Color color) {
+					consumable = new Consumable(
+						displayText: args[2] as string,
+						texturePath: args[3] as string,
+						assetDimensions: assetDims,
+						hoverText: args[4] as string,
+						customHoverColor: color,
+						hasBeenConsumed: args[6] as Func<bool>
+					);
+				} else {
+					consumable = new Consumable(
+						displayText: args[2] as string,
+						texturePath: args[3] as string,
+						assetDimensions: assetDims,
+						hoverText: args[4] as string,
+						type: GetType(type: args[5] as string),
+						hasBeenConsumed: args[6] as Func<bool>
+					);
+				}
 
 				return Report.AddConsumableToList(modName: args[1] as string, consumable: consumable);
 			} else {
 				return false;
 			}
-		}
 
-		private ConsumableType GetType(string type) {
-			if (Enum.TryParse(type, out ConsumableType consumableType)) {
-				return consumableType;
-			} else {
-				return ConsumableType.player_normal;
+			static ConsumableType GetType(string type) {
+				if (Enum.TryParse(type, out ConsumableType consumableType)) {
+					return consumableType;
+				} else {
+					return ConsumableType.player_normal;
+				}
 			}
 		}
 	}

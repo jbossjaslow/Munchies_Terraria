@@ -1,14 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using System;
+﻿using System;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Utilities.Terraria.Utilities;
 
 namespace Munchies.Models {
-	public class VanillaConsumable : IConsumable {
+	public class VanillaConsumable {
 		public ConsumableItem Item;
 
 		public VanillaConsumable(ConsumableItem item) {
