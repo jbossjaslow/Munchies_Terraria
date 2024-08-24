@@ -30,3 +30,48 @@ Devs can also write mods specifically to add mod support. I will get to other ad
 [h2]Source Code[/h2]
 The source code from this mod can be found [url=https://github.com/jbossjaslow/Munchies_Terraria]here[/url], if you would like to read it or add an issue to the board.
 
+Below is an example of the Call code an external mod can make to add its items to the Munchies checklist. The PostSetupContent() override function goes in your mod's main class (aka the one that conforms to the Mod type)
+
+[code]
+public override void PostSetupContent() {
+	try {
+		if (ModLoader.TryGetMod("Munchies", out Mod munchiesMod)) {
+			AddMyMod(munchiesMod);
+			AddModConsumables(munchiesMod);
+		} else {
+			Logger.Error("Error: couldn't find the Munchies mod");
+		}
+	} catch (Exception e) {
+		Logger.Error($"PostSetupContent Error: {e.StackTrace} {e.Message}");
+	}
+}
+
+private void AddMyMod(Mod munchiesMod) {
+	string[] args = {
+		"AddMod",
+		"<Mod name here>",
+		"<Path to tab icon>"
+	};
+	munchiesMod.Call(args);
+}
+
+private void AddModConsumables(Mod munchiesMod) {
+	object[] consumableArgs = {
+		"AddConsumable",
+		"<Mod name here>",
+		"<Item name here>",
+		"<Path to item icon>",
+		"<Hover text here>",
+		"<item category here>", // Options: player_normal, player_expert, world; Alternatively, can use a custom color such as Color.red (the color is not a string, do not add quotes)
+		new Func<bool>(IsMyItemEnabled),
+		"<item icon width>", // this is a string, representing pixels
+		"<item icon height>" // this is a string, representing pixels
+	};
+	munchiesMod.Call(consumableArgs);
+
+	static bool IsMyItemEnabled() {
+		return <Code to get if the item is enabled>;
+	}
+}
+[/code]
+

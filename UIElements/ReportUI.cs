@@ -7,14 +7,16 @@ using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.UI;
-using Terraria.GameInput;
 using System.Collections.Generic;
 using System.Linq;
+using Munchies.Configuration;
+using Terraria.GameInput;
 
 namespace Munchies.UIElements {
 	class ReportUI : UIState {
+		#region Properties
+		DraggablePanel mainPanel = new();
 		public UIPanel reportPanel;
 		public UIList reportList = [];
 		public UIText titleText = new("Consumables");
@@ -24,6 +26,9 @@ namespace Munchies.UIElements {
 		readonly float panelWidth = 300f;
 		readonly float panelHeight = 500f;
 		public static readonly float tabSize = 36f;
+
+		private bool HasBeenInitialized = false;
+		private bool mainPanelPosSetFromSavedPos = false;
 
 		public static readonly Color BackgroundColor = new(73, 94, 171);
 
@@ -50,14 +55,24 @@ namespace Munchies.UIElements {
 
 			if (newValue) ReportUISystem.Instance.ReportUI.PresentUI(); // get out of the static context
 
+			if (Config.instance.ResetDragCoords) {
+				ReportUISystem.Instance.ReportUI.mainPanel.Left.Pixels = ReportUISystem.Instance.ReportUI.mainPanel.Top.Pixels = 0;
+				Config.instance.ResetDragCoords = false;
+				ReportUISystem.ChecklistLeftPos = 0;
+				ReportUISystem.ChecklistTopPos = 0;
+			}
+
 			ReportUISystem._reportUI.SetState(newValue ? ReportUISystem.Instance.ReportUI : null);
+
+			ReportUISystem.Instance.ReportUI.SetMainPanelPosFromSavedPos();
 		}
+
+		#endregion
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			Vector2 MousePosition = new(Main.mouseX, Main.mouseY);
-			if (ContainsPoint(MousePosition)) {
+			if(mainPanel.ContainsPoint(MousePosition)) {
 				Main.player[Main.myPlayer].mouseInterface = true;
-				PlayerInput.LockVanillaMouseScroll("Munchies");
 			}
 		}
 
@@ -69,7 +84,7 @@ namespace Munchies.UIElements {
 			Main.playerInventory = false;
 		}
 
-		private bool HasBeenInitialized = false;
+		#region Initialize UI
 		private void InitializeUI() {
 			if (HasBeenInitialized) return;
 			HasBeenInitialized = true;
@@ -86,14 +101,32 @@ namespace Munchies.UIElements {
 		}
 
 		private void InitializePanel() {
+			//mainPanel = new();
+			mainPanel.SetPadding(0);
+			mainPanel.HAlign = 0.5f;
+			mainPanel.VAlign = 0.5f;
+			mainPanel.Width.Set(panelWidth, 0f);
+			mainPanel.Height.Set(panelHeight + (tabSize * 0.75f), 0f);
+			mainPanel.BackgroundColor = Color.Transparent;
+			mainPanel.BorderColor = Color.Transparent;
+			Append(mainPanel);
+
 			reportPanel = new();
 			reportPanel.SetPadding(0);
 			reportPanel.HAlign = 0.5f;
-			reportPanel.VAlign = 0.5f;
+			reportPanel.Top.Set(tabSize * 0.75f, 0);
 			reportPanel.Width.Set(panelWidth, 0f);
 			reportPanel.Height.Set(panelHeight, 0f);
 			reportPanel.BackgroundColor = BackgroundColor;
-			Append(reportPanel);
+			mainPanel.Append(reportPanel);
+		}
+
+		private void SetMainPanelPosFromSavedPos() {
+			if (mainPanelPosSetFromSavedPos) return;
+			mainPanelPosSetFromSavedPos = true;
+			mainPanel.Left.Pixels = ReportUISystem.ChecklistLeftPos;
+			mainPanel.Top.Pixels = ReportUISystem.ChecklistTopPos;
+			mainPanel.Recalculate();
 		}
 
 		private void InitializeTitleTextAndCloseButton() {
@@ -146,16 +179,21 @@ namespace Munchies.UIElements {
 				// All of these have to be set outside, otherwise nothing works
 				tab.Width.Set(tabSize, 0);
 				tab.Height.Set(tabSize, 0);
-				tab.HAlign = 0.5f;
-				tab.VAlign = 0.5f;
-				tab.Top.Set((-panelHeight / 2) - (tabSize * 0.275f), 0);
-				tab.Left.Set((-panelWidth / 2) + (tabSize * 0.5f) + 10 + (tabSize * i), 0);
+				//tab.HAlign = 0.5f;
+				//tab.VAlign = 0.5f;
+				//tab.Top.Set((-panelHeight / 2) - (tabSize * 0.275f), 0);
+				//tab.Left.Set((-panelWidth / 2) + (tabSize * 0.5f) + 10 + (tabSize * i), 0);
+				tab.Top.Set(tabSize / 4, 0);
+				tab.Left.Pixels = spacing + (tabSize * i);
 				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
-				Append(tab);
+				mainPanel.Append(tab);
 				tabs.Add(tab);
 			}
 		}
 
+		#endregion
+
+		#region Update UI
 		private void UpdateSelectedTab() {
 			if (CurrentTab == null) return;
 
@@ -163,6 +201,10 @@ namespace Munchies.UIElements {
 				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
 			}
 		}
+
+		#endregion
+
+		#region User Interaction
 
 		private void CloseButtonClicked(UIMouseEvent evt, UIElement listeningElement) {
 			SetVisible(false);
@@ -191,8 +233,14 @@ namespace Munchies.UIElements {
 			reportList.Activate();
 		}
 
+		#endregion
+
+		#region Helper methods
+
 		private List<Consumable> CurrentConsumables() {
 			return Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == CurrentTab.ModTabName).Consumables;
 		}
+
+		#endregion
 	}
 }

@@ -1,4 +1,6 @@
 ﻿[list]
 [*]Changed close button to an X texture to make it more obvious. Old texture was the trash can.
 [*]Added in proper list item text scaling in case text is too long (used to have overlay issues with check mark)
+[*]Made checklist box draggable if enabled via settings. This value is saved (per world) so that it reappears in the last place set.
+[*]Added config options for the checklist dragging, especially if the box is lost or you want to reset its position.
 [/list]

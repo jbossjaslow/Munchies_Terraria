@@ -1,9 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Munchies.Configuration;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 
 namespace Munchies.UIElements {
@@ -14,6 +17,9 @@ namespace Munchies.UIElements {
 
 		internal ReportUI ReportUI;
 		internal static UserInterface _reportUI;
+
+		public static float ChecklistLeftPos;
+		public static float ChecklistTopPos;
 
 		public override void Load() {
 			if (!Main.dedServ) {
@@ -31,6 +37,16 @@ namespace Munchies.UIElements {
 
 		public override void Unload() {
 			ReportUI = null;
+		}
+
+		public override void LoadWorldData(TagCompound tag) {
+			ChecklistLeftPos = tag.GetFloat(SaveData.CheckListLeftPosKey);
+			ChecklistTopPos = tag.GetFloat(SaveData.CheckListTopPosKey);
+		}
+
+		public override void SaveWorldData(TagCompound tag) {
+			tag[SaveData.CheckListLeftPosKey] = ChecklistLeftPos;
+			tag[SaveData.CheckListTopPosKey] = ChecklistTopPos;
 		}
 
 		public override void UpdateUI(GameTime gameTime) {

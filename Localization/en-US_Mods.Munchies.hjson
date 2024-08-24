@@ -1,1 +1,17 @@
 Keybinds.ToggleReport.DisplayName: Toggle Report
+
+Configs: {
+	Config: {
+		DisplayName: Config
+
+		AllowDragging: {
+			Label: Allow Dragging
+			Tooltip: Enable dragging the checklist around the screen
+		}
+
+		ResetDragCoords: {
+			Label: Reset Drag Position
+			Tooltip: Select this to reset the position of the checklist
+		}
+	}
+}
