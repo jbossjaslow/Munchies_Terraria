@@ -9,6 +9,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="description_workshop.txt" />
+	  <None Remove="UIElements\xMark.png" />
 	</ItemGroup>
 
 	<!-- References -->

@@ -1,8 +1,4 @@
-﻿Improved support for External Mods
-
-Simplified texture loading to improve performance
-Added support for custom text colors instead of the predefined Normal/Expert/World category colors from Vanilla
-Added boxes behind hover text for easier reading
-
-Developers can add consumable items (and their accompanying mods) to the list using Calls
-See Munchies.cs for more info
+﻿[list]
+[*]Changed close button to an X texture to make it more obvious. Old texture was the trash can.
+[*]Added in proper list item text scaling in case text is too long (used to have overlay issues with check mark)
+[/list]

@@ -15,9 +15,18 @@ This list contains all of the permanent unlock consumable items in Vanilla.
 [h2]Mod Support[/h2]
 Mod support has been added via Calls. This means that developers can call into Munchies to add their content to this mod. This is the easiest and most extensible approach. If you want your favorite mod to show up here, reach out to the developer and ask them to add support!
 
+When at least 1 mod is registered to Munchies, it’ll display tabs for each mod, and also 1 for vanilla (called “Terraria”). The tabs are 36x36 with 10 pixels of padding around the image, so effectively 26x26 for the images. I’ve set the images to scale themselves to fit, so try to use a square image if you can for best results. 
+
+If there are no mods registered, the vanilla tab will not appear, as there is no need for it.
+
+If an image path is not given, or the texture cannot be loaded by the game, a default texture will be used in place. This applies for both the consumables and mod tab icon (although the tab icon doesn’t play well with the default texture lol). 
+
 Devs can also write mods specifically to add mod support. I will get to other addon mods in the future, but no timeline has been established yet.
 [hr][/hr]
 [h3]Current mods:[/h3][list]
 [*] Calamity Addon - Adds support for Calamity https://steamcommunity.com/sharedfiles/filedetails/?id=3312725122
 [/list]
+
+[h2]Source Code[/h2]
+The source code from this mod can be found [url=https://github.com/jbossjaslow/Munchies_Terraria]here[/url], if you would like to read it or add an issue to the board.
 

@@ -27,6 +27,8 @@ namespace Munchies.UIElements {
 
 		public static readonly Color BackgroundColor = new(73, 94, 171);
 
+		public static Asset<Texture2D> buttonDeleteTexture;
+
 		private ConsumableMod _currentTab;
 		public ConsumableMod CurrentTab {
 			get { return _currentTab; }
@@ -51,12 +53,6 @@ namespace Munchies.UIElements {
 			ReportUISystem._reportUI.SetState(newValue ? ReportUISystem.Instance.ReportUI : null);
 		}
 
-		//public override void Update(GameTime gameTime) {
-		//	base.Update(gameTime);
-
-		//	// do something on update
-		//}
-
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			Vector2 MousePosition = new(Main.mouseX, Main.mouseY);
 			if (ContainsPoint(MousePosition)) {
@@ -72,22 +68,6 @@ namespace Munchies.UIElements {
 			UpdateSelectedTab();
 			Main.playerInventory = false;
 		}
-
-		//public override void OnInitialize() {
-			////Munchies.report ??= new(); // initialize the report if it is null
-			//CurrentTab = Report.VanillaConsumableMod;
-			////CurrentTab = new TestConsumableMod();
-
-			//InitializePanel();
-
-			//InitializeTitleTextAndCloseButton();
-
-			//InitializeListAndScrollBar();
-
-			////InitializeTabs();
-
-			//Append(reportPanel);
-		//}
 
 		private bool HasBeenInitialized = false;
 		private void InitializeUI() {
@@ -128,13 +108,12 @@ namespace Munchies.UIElements {
 			titleText.Top.Set(10f, 0f);
 			reportPanel.Append(titleText);
 
-			Asset<Texture2D> buttonDeleteTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/ButtonDelete");
 			string closeTextLocalized = Language.GetTextValue("LegacyInterface.52"); // Localized text for "Close"
-			ReportCloseButton closeButton = new(buttonDeleteTexture, closeTextLocalized);
+			ReportCloseButton closeButton = new(buttonDeleteTexture, closeTextLocalized, Color.Red);
 			closeButton.Left.Set(-32f, 1f);
 			closeButton.SetPadding(0);
 			closeButton.Top.Set(10f, 0f);
-			closeButton.Width.Set(22f, 0f);
+			closeButton.Width.Set(20f, 0f);
 			closeButton.Height.Set(22f, 0f);
 			closeButton.OnLeftClick += new MouseEvent(CloseButtonClicked);
 			reportPanel.Append(closeButton);

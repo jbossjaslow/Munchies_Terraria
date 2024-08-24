@@ -59,7 +59,17 @@ namespace Munchies.UIElements {
 			};
 			text.Left.Set(imageAssetMaxWidth + (spacing * 2), 0f);
 			text.SetPadding(0);
+
 			panel.Append(text);
+
+			// If text is too long to fit, scale it down --> DynamicallyScaleDownToWidth doesn't appear to do anything on its own, at least how I have everything setup
+			CalculatedStyle textDimensions = text.GetInnerDimensions();
+			float restOfPanelWidths = (checkMarkImage.Width.Pixels + spacing + 19) + imageAssetMaxWidth + (spacing * 2);
+			float maxTextWidth = panel.GetDimensions().Width - restOfPanelWidths;
+			if (textDimensions.Width > maxTextWidth) {
+				float newScale = maxTextWidth / textDimensions.Width;
+				text.SetText(text: Consumable.DisplayText, textScale: newScale, large: false);
+			}
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -11,14 +10,19 @@ namespace Munchies.UIElements {
 	// Inheriting is a great tool for UI design. 
 	// By inheriting, we get the Image drawing, MouseOver sound, and fading for free from UIImageButton
 	// We've added some code to allow the Button to show a text tooltip while hovered
-	internal class ReportCloseButton(Asset<Texture2D> texture, string hoverText) : UIImageButton(texture) {
+	internal class ReportCloseButton(Asset<Texture2D> texture, string hoverText, Color color): UIImageButton(texture: texture) {
 		// Tooltip text that will be shown on hover
-		internal string hoverText = hoverText;
+		//internal string hoverText = hoverText;
+
+		private readonly float _visibilityActive = 1f;
+		private readonly float _visibilityInactive = 0.4f;
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			// When you override UIElement methods, don't forget call the base method
 			// This helps to keep the basic behavior of the UIElement
-			base.DrawSelf(spriteBatch);
+			//base.DrawSelf(spriteBatch);
+			CalculatedStyle dimensions = GetDimensions();
+			spriteBatch.Draw(texture.Value, dimensions.Position(), color * (base.IsMouseHovering ? _visibilityActive : _visibilityInactive));
 
 			// IsMouseHovering becomes true when the mouse hovers over the current UIElement
 			if (IsMouseHovering) Main.hoverItemName = hoverText;
