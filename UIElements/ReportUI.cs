@@ -224,6 +224,9 @@ namespace Munchies.UIElements {
 			reportList.Clear();
 
 			foreach (Consumable consumable in CurrentConsumables()) {
+				// If config is false for showing multi-use consumables, jump to next loop if consumable is multi-use
+				if (!Config.instance.ShowMultiUseConsumables && consumable.IsMultiUse) continue;
+
 				ReportListItem item = new(consumable);
 				item.Width.Set(-10f, 1f);
 				item.Height.Set(50, 0);

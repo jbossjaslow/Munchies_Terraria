@@ -10,6 +10,11 @@ namespace Munchies.Models {
 		}
 
 		public ConsumableType Type => Item switch {
+			// multi-use
+			ConsumableItem.lifeCrystal => ConsumableType.multiUse,
+			ConsumableItem.lifeFruit => ConsumableType.multiUse,
+			ConsumableItem.manaCrystal => ConsumableType.multiUse,
+
 			// normal
 			ConsumableItem.artisanLoaf => ConsumableType.player_normal,
 			ConsumableItem.torchGod => ConsumableType.player_normal,
@@ -28,7 +33,7 @@ namespace Munchies.Models {
 			ConsumableItem.advCombatTech1 => ConsumableType.world,
 			ConsumableItem.advCombatTech2 => ConsumableType.world,
 			ConsumableItem.peddlersSatchel => ConsumableType.world,
-			_ => throw new System.NotImplementedException(),
+			_ => throw new NotImplementedException(),
 		};
 
 		//public Color DisplayTextColor => Type switch {
@@ -39,6 +44,11 @@ namespace Munchies.Models {
 		//};
 
 		public string DisplayText => Item switch {
+			// multi-use
+			ConsumableItem.lifeCrystal => "Life Crystals",
+			ConsumableItem.lifeFruit => "Life Fruits",
+			ConsumableItem.manaCrystal => "Mana Crystals",
+
 			// normal
 			ConsumableItem.artisanLoaf => "Artisan Loaf",
 			ConsumableItem.torchGod => "Torch God's Favor",
@@ -57,10 +67,15 @@ namespace Munchies.Models {
 			ConsumableItem.advCombatTech1 => "Adv. Combat Tech V1",
 			ConsumableItem.advCombatTech2 => "Adv. Combat Tech V2",
 			ConsumableItem.peddlersSatchel => "Peddler's Satchel",
-			_ => throw new System.NotImplementedException(),
+			_ => throw new NotImplementedException(),
 		};
 
 		public string HoverText => Item switch {
+			// multi-use
+			ConsumableItem.lifeCrystal => "Increases max health by 20 (caps at 400)",
+			ConsumableItem.lifeFruit => "Increases max health by 5 (caps at 500)",
+			ConsumableItem.manaCrystal => "Increases max mana by 20 (caps at 200)",
+
 			// normal
 			ConsumableItem.artisanLoaf => "Increases range of crafting stations by 4 tiles",
 			ConsumableItem.torchGod => "Allows automatic placing of biome torches",
@@ -79,7 +94,7 @@ namespace Munchies.Models {
 			ConsumableItem.advCombatTech1 => "[Once per World] Increases NPC defense by 6 and damage by 20%",
 			ConsumableItem.advCombatTech2 => "[Once per World] Increases NPC defense by 6 and damage by 20% (stacks with Vol 1)",
 			ConsumableItem.peddlersSatchel => "[Once per World] Traveling merchant sells an additional item",
-			_ => throw new System.NotImplementedException(),
+			_ => throw new NotImplementedException(),
 		};
 
 		public string TexturePath => "Terraria/Images/Item_" + AssetPath;
@@ -104,7 +119,33 @@ namespace Munchies.Models {
 			ConsumableItem.advCombatTech1 => "4382",
 			ConsumableItem.advCombatTech2 => "5336",
 			ConsumableItem.peddlersSatchel => "5343",
-			_ => throw new System.NotImplementedException(),
+			_ => throw new NotImplementedException(),
+		};
+
+		public int ItemId => Item switch {// multi-use
+			ConsumableItem.lifeCrystal => 29,
+			ConsumableItem.lifeFruit => 1291,
+			ConsumableItem.manaCrystal => 109,
+
+			// normal
+			ConsumableItem.artisanLoaf => 5326,
+			ConsumableItem.torchGod => 5043,
+			ConsumableItem.vitalCrystal => 5337,
+			ConsumableItem.aegisFruit => 5338,
+			ConsumableItem.arcaneCrystal => 5339,
+			ConsumableItem.ambrosia => 5342,
+			ConsumableItem.gummyWorm => 5341,
+			ConsumableItem.galaxyPearl => 5340,
+
+			// expert
+			ConsumableItem.demonHeart => 3335,
+			ConsumableItem.minecartUpgradeKit => 5289,
+
+			// world
+			ConsumableItem.advCombatTech1 => 4382,
+			ConsumableItem.advCombatTech2 => 5336,
+			ConsumableItem.peddlersSatchel => 5343,
+			_ => throw new NotImplementedException(),
 		};
 
 		public (float X, float Y) AssetDimensions => Item switch {
@@ -126,7 +167,7 @@ namespace Munchies.Models {
 			ConsumableItem.advCombatTech1 => (28f, 30f),
 			ConsumableItem.advCombatTech2 => (28f, 30f),
 			ConsumableItem.peddlersSatchel => (34f, 28f),
-			_ => throw new System.NotImplementedException(),
+			_ => throw new NotImplementedException(),
 		};
 
 		public bool _HasBeenConsumed() {
@@ -149,10 +190,71 @@ namespace Munchies.Models {
 				ConsumableItem.advCombatTech1 => NPC.combatBookWasUsed,
 				ConsumableItem.advCombatTech2 => NPC.combatBookVolumeTwoWasUsed,
 				ConsumableItem.peddlersSatchel => NPC.peddlersSatchelWasUsed,
-				_ => throw new System.NotImplementedException(),
+				_ => throw new NotImplementedException(),
 			};
 		}
 
 		public Func<bool> HasBeenConsumed => _HasBeenConsumed;
+
+		private int _currentCount() {
+			return Item switch {
+				// multi-use
+				ConsumableItem.lifeCrystal => Main.LocalPlayer.ConsumedLifeCrystals,
+				ConsumableItem.lifeFruit => Main.LocalPlayer.ConsumedLifeFruit,
+				ConsumableItem.manaCrystal => Main.LocalPlayer.ConsumedManaCrystals,
+
+				// normal
+				ConsumableItem.artisanLoaf => Main.LocalPlayer.ateArtisanBread.ToInt(),
+				ConsumableItem.torchGod => Main.LocalPlayer.unlockedBiomeTorches.ToInt(),
+				ConsumableItem.vitalCrystal => Main.LocalPlayer.usedAegisCrystal.ToInt(),
+				ConsumableItem.aegisFruit => Main.LocalPlayer.usedAegisFruit.ToInt(),
+				ConsumableItem.arcaneCrystal => Main.LocalPlayer.usedArcaneCrystal.ToInt(),
+				ConsumableItem.ambrosia => Main.LocalPlayer.usedAmbrosia.ToInt(),
+				ConsumableItem.gummyWorm => Main.LocalPlayer.usedGummyWorm.ToInt(),
+				ConsumableItem.galaxyPearl => Main.LocalPlayer.usedGalaxyPearl.ToInt(),
+
+				// expert
+				ConsumableItem.demonHeart => Main.LocalPlayer.CanDemonHeartAccessoryBeShown().ToInt(),
+				ConsumableItem.minecartUpgradeKit => Main.LocalPlayer.unlockedSuperCart.ToInt(),
+
+				// world
+				ConsumableItem.advCombatTech1 => NPC.combatBookWasUsed.ToInt(),
+				ConsumableItem.advCombatTech2 => NPC.combatBookVolumeTwoWasUsed.ToInt(),
+				ConsumableItem.peddlersSatchel => NPC.peddlersSatchelWasUsed.ToInt(),
+				_ => throw new NotImplementedException(),
+			};
+		}
+		public Func<int> CurrentCount => _currentCount;
+
+		private int _totalCount() {
+			return Item switch {
+				// multi-use
+				ConsumableItem.lifeCrystal => 15,
+				ConsumableItem.lifeFruit => 20,
+				ConsumableItem.manaCrystal => 9,
+
+				// normal
+				ConsumableItem.artisanLoaf => 1,
+				ConsumableItem.torchGod => 1,
+				ConsumableItem.vitalCrystal => 1,
+				ConsumableItem.aegisFruit => 1,
+				ConsumableItem.arcaneCrystal => 1,
+				ConsumableItem.ambrosia => 1,
+				ConsumableItem.gummyWorm => 1,
+				ConsumableItem.galaxyPearl => 1,
+
+				// expert
+				ConsumableItem.demonHeart => 1,
+				ConsumableItem.minecartUpgradeKit => 1,
+
+				// world
+				ConsumableItem.advCombatTech1 => 1,
+				ConsumableItem.advCombatTech2 => 1,
+				ConsumableItem.peddlersSatchel => 1,
+				_ => throw new NotImplementedException(),
+			};
+		}
+
+		public Func<int> TotalCount => _totalCount;
 	}
 }

@@ -13,5 +13,10 @@ Configs: {
 			Label: Reset Drag Position
 			Tooltip: Select this to reset the position of the checklist
 		}
+
+		ShowMultiUseConsumables: {
+			Label: Show Multi Use Consumables
+			Tooltip: ""
+		}
 	}
 }

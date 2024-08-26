@@ -1,5 +1,10 @@
 ﻿namespace Munchies.Models {
 	public enum ConsumableItem {
+		// multi-use
+		lifeCrystal,
+		lifeFruit,
+		manaCrystal,
+
 		// normal
 		artisanLoaf,
 		torchGod,
