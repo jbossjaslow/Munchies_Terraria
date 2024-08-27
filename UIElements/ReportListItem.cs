@@ -19,12 +19,12 @@ namespace Munchies.UIElements {
 		public static Asset<Texture2D> CheckMarkTexture;
 
 		private float CheckMarkOrRatioTextWidth = 0;
-		private bool adjustedRatioText = false;
 
 		UIPanel panel;
 		UIText text;
 		UIImage itemImage;
 		UIText ratioText;
+		UIImage checkMarkImage;
 
 		public override void OnInitialize() {
 			panel = new() {
@@ -62,7 +62,7 @@ namespace Munchies.UIElements {
 			CalculatedStyle textDimensions = text.GetInnerDimensions();
 			float restOfPanelWidths;
 			if (CheckMarkOrRatioTextWidth == 0) {
-				restOfPanelWidths = imageAssetMaxWidth + (spacing * 3); // 3 elements means 4 spacers
+				restOfPanelWidths = imageAssetMaxWidth + (spacing * 3); // 2 elements means 3 spacers
 			} else {
 				restOfPanelWidths = CheckMarkOrRatioTextWidth + imageAssetMaxWidth + (spacing * 4); // 3 elements means 4 spacers
 			}
@@ -78,15 +78,19 @@ namespace Munchies.UIElements {
 			if ((itemImage?.IsMouseHovering ?? false) && Consumable.UsingMissingTexture) {
 				UICommon.TooltipMouseText(text: "Missing Texture");
 			} else if (panel?.IsMouseHovering ?? false) {
-				UICommon.TooltipMouseText(text: Consumable.HoverText); // Adds box behind hover text
+				// Since this is added in DrawSelf, using .Value will grab current language without needing to reload mod
+				UICommon.TooltipMouseText(text: Consumable.HoverText.Value); // Adds box behind hover text
 			}
 		}
 
 		#region OnInit setup
-		private void AddCheckMarkOrCount() {
+		public void AddCheckMarkOrCount() {
+			checkMarkImage?.Remove();
+			ratioText?.Remove();
+
 			if (Consumable.HasBeenConsumed) {
 				// Consumed, add checkmark
-				UIImage checkMarkImage = new(CheckMarkTexture);
+				checkMarkImage = new(CheckMarkTexture);
 				checkMarkImage.Left.Set(-spacing - CheckMarkTexture.Width(), 1f);
 				checkMarkImage.Width.Set(CheckMarkTexture.Width(), 0f);
 				checkMarkImage.Height.Set(CheckMarkTexture.Height(), 0f);

@@ -41,7 +41,7 @@ namespace Munchies.UIElements {
 				if (_currentTab == value) return;
 
 				_currentTab = value;
-				//UpdateConsumablesList();
+				//RedrawConsumablesList();
 			}
 		}
 		public List<ReportTab> tabs = [];
@@ -77,18 +77,18 @@ namespace Munchies.UIElements {
 		}
 
 		public void PresentUI() {
-			InitializeUI();
-			//InitializeTabs();
-			UpdateConsumablesList();
-			UpdateSelectedTab();
+			if (!HasBeenInitialized) {
+				HasBeenInitialized = true;
+				InitializeUI();
+				RedrawConsumablesList();
+				UpdateSelectedTab();
+			}
+
 			Main.playerInventory = false;
 		}
 
 		#region Initialize UI
 		private void InitializeUI() {
-			if (HasBeenInitialized) return;
-			HasBeenInitialized = true;
-			//Munchies.report ??= new(); // initialize the report if it is null
 			CurrentTab = Report.VanillaConsumableMod;
 
 			InitializePanel();
@@ -179,10 +179,6 @@ namespace Munchies.UIElements {
 				// All of these have to be set outside, otherwise nothing works
 				tab.Width.Set(tabSize, 0);
 				tab.Height.Set(tabSize, 0);
-				//tab.HAlign = 0.5f;
-				//tab.VAlign = 0.5f;
-				//tab.Top.Set((-panelHeight / 2) - (tabSize * 0.275f), 0);
-				//tab.Left.Set((-panelWidth / 2) + (tabSize * 0.5f) + 10 + (tabSize * i), 0);
 				tab.Top.Set(tabSize / 4, 0);
 				tab.Left.Pixels = spacing + (tabSize * i);
 				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
@@ -215,15 +211,15 @@ namespace Munchies.UIElements {
 
 			CurrentTab = mod;
 			if (Report.ConsumablesList.Count > 1) titleText.SetText(CurrentTab.ModTabName);
-			UpdateConsumablesList();
+			RedrawConsumablesList();
 			UpdateSelectedTab();
 			SoundEngine.PlaySound(SoundID.Tink);
 		}
 
-		internal void UpdateConsumablesList() {
+		internal void RedrawConsumablesList() {
 			reportList.Clear();
 
-			foreach (Consumable consumable in CurrentConsumables()) {
+			foreach (Consumable consumable in CurrentConsumables) {
 				// If config is false for showing multi-use consumables, jump to next loop if consumable is multi-use
 				if (!Config.instance.ShowMultiUseConsumables && consumable.IsMultiUse) continue;
 
@@ -236,13 +232,20 @@ namespace Munchies.UIElements {
 			reportList.Activate();
 		}
 
+		public void UpdateConsumablesList(Item usedItem) {
+			// This method is only called when the used item is already found in the CurrentConsumables list, so this extra forEach and Cast shouldn't have much of a performance impact
+			foreach (ReportListItem item in reportList.Cast<ReportListItem>()) {
+				if (usedItem.type == item.Consumable.ID) {
+					item.AddCheckMarkOrCount();
+				}
+			}
+		}
+
 		#endregion
 
 		#region Helper methods
 
-		private List<Consumable> CurrentConsumables() {
-			return Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == CurrentTab.ModTabName).Consumables;
-		}
+		public List<Consumable> CurrentConsumables => Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == CurrentTab.ModTabName).Consumables;
 
 		#endregion
 	}

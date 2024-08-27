@@ -14,22 +14,21 @@ namespace Munchies.Models {
 		public ConsumableMod(string modTabName, string modTabTexturePath) {
 			ModTabName = modTabName;
 			//ModTabTexture = ModContent.Request<Texture2D>(modTabTexturePath);
-			SetTextureAndDimensionsForVanilla(modTabTexturePath);
+			SetTextureForVanilla(modTabTexturePath);
 		}
 
 		public ConsumableMod(Mod mod) {
 			ModTabName = mod.DisplayNameClean;
-			SetTextureAndDimensionsForExternalMod(mod);
+			SetTextureForExternalMod(mod);
 		}
 
-		private void SetTextureAndDimensionsForExternalMod(Mod mod) {
+		private void SetTextureForExternalMod(Mod mod) {
 			if (mod.HasAsset("icon_small")) {
 				Asset<Texture2D> texture = mod.Assets.Request<Texture2D>("icon_small");
 				if (texture.Size() == new Vector2(30)) {
 					ModTabTexture = texture;
 					UsingMissingTexture = false;
 				} else {
-					mod.Logger.Info("icon_small needs to be 30x30 pixels");
 					ModTabTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
 					UsingMissingTexture = true;
 				}
@@ -39,7 +38,7 @@ namespace Munchies.Models {
 			}
 		}
 
-		private void SetTextureAndDimensionsForVanilla(string texturePath) {
+		private void SetTextureForVanilla(string texturePath) {
 			if (ModContent.HasAsset(texturePath)) {
 				ModTabTexture = ModContent.Request<Texture2D>(texturePath);
 				UsingMissingTexture = false;

@@ -68,10 +68,8 @@ namespace Munchies {
 				);
 
 				return Report.AddConsumableToList(mod: externalMod, consumable: consumable);
-
-				// Add optional fields for max # of items, option of func<int> for how many have been consumed
-			} catch (Exception e) {
-				(mod ?? this).Logger.Error($"Error adding consumable: {e.Message}, {e.StackTrace}");
+			} catch {
+				Logger.Error($"Error adding consumable from the {mod.Name} mod, see log for details");
 				return false;
 			}
 		}
@@ -79,26 +77,25 @@ namespace Munchies {
 		private bool HandleAddVanillaConsumable(params object[] args) {
 			try {
 				ConsumableMod vanillaMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
-				Consumable consumable;
 
-				object apiString = args[2];
+				object apiString = args[1];
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
 				if (apiVersion != new Version(1, 3, 0)) return false; // exit if not using verison 1.3 of this mod
 
-				int itemId = int.Parse(args[3] as string);
-				Func<int> currentCount = args[5] as Func<int>;
-				Func<int> totalCount = args[6] as Func<int>;
+				int itemId = int.Parse(args[2] as string);
+				Func<int> currentCount = args[4] as Func<int>;
+				Func<int> totalCount = args[5] as Func<int>;
 
-				consumable = new(
+				Consumable consumable = new(
 					vanillaItemId: itemId,
-					type: GetType(args[4] as string),
+					type: GetType(args[3] as string),
 					currentCount: currentCount,
 					totalCount: totalCount
 				);
 
 				return Report.AddConsumableToList(mod: vanillaMod, consumable: consumable);
-			} catch (Exception e) {
-				Logger.Error($"Error adding consumable: {e.Message}, {e.StackTrace}");
+			} catch {
+				Logger.Error($"Error adding vanilla consumable, see log for details");
 				return false;
 			}
 		}

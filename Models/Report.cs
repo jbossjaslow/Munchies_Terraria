@@ -1,17 +1,42 @@
 using Munchies.Utilities;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.ID;
 
 namespace Munchies.Models {
 	public class Report {
 		public static ConsumableMod VanillaConsumableMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
 		public static List<ConsumablesEntry> ConsumablesList = [];
 
+		private static int[] VanillaItems => [
+			// multi-use
+			ItemID.LifeCrystal,
+			ItemID.LifeFruit,
+			ItemID.ManaCrystal,
+
+			// normal
+			ItemID.ArtisanLoaf,
+			ItemID.TorchGodsFavor,
+			ItemID.AegisCrystal,
+			ItemID.AegisFruit,
+			ItemID.ArcaneCrystal,
+			ItemID.Ambrosia,
+			ItemID.GummyWorm,
+			ItemID.GalaxyPearl,
+
+			// expert
+			ItemID.DemonHeart,
+			ItemID.MinecartPowerup,
+
+			// world
+			ItemID.CombatBook,
+			ItemID.CombatBookVolumeTwo,
+			ItemID.PeddlersSatchel,
+		];
+
 		public Report() {
-			List<Consumable> vanillaConsumables = EnumUtil
-				.AllCases<ConsumableItem>()
-				.Select(ci => new VanillaConsumable(ci))
-				.Select(vc => new Consumable(vanillaItemId: vc.ItemId, type: vc.Type, currentCount: vc.CurrentCount, totalCount: vc.TotalCount))
+			List<Consumable> vanillaConsumables = VanillaItems
+				.Select(id => new Consumable(vanillaItemId: id))
 				.ToList();
 
 			ConsumablesList.Add(new(VanillaConsumableMod, vanillaConsumables));
@@ -32,7 +57,7 @@ namespace Munchies.Models {
 			ConsumablesEntry entry = GetModEntryOrAddIfNeeded(mod);
 
 			foreach (Consumable c in entry.Consumables) {
-				if (c.DisplayText == consumable.DisplayText) {
+				if (c.ID == consumable.ID) {
 					// consumable already exists, exit
 					return false;
 				}

@@ -15,8 +15,8 @@ Configs: {
 		}
 
 		ShowMultiUseConsumables: {
-			Label: Show Multi Use Consumables
-			Tooltip: ""
+			Label: Show Multi-Use Consumables
+			Tooltip: Show consumables that can be used a limited number of times, such as Life Crystals
 		}
 	}
 }
