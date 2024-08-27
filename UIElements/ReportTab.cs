@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models;
-using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
-using ReLogic.Content;
-using Terraria.ModLoader;
 using System;
 using Terraria.Audio;
 using Terraria.ID;
@@ -14,7 +11,6 @@ namespace Munchies.UIElements {
 	public class ReportTab(ConsumableMod mod, int index, Action<ConsumableMod> OnSelectTab) : UIElement() {
 
 		public readonly ConsumableMod mod = mod;
-		//public IConsumableMod selectedMod = selectedMod;
 		public int index = index;
 		public UIPanel panel = new();
 		public UIImage image;
@@ -26,7 +22,7 @@ namespace Munchies.UIElements {
 			panel.OnLeftClick += new MouseEvent(OnTabClick);
 			Append(panel);
 
-			image = new(mod.ModTabTexture) {
+			image = new(mod.GetTexture()) {
 				VAlign = 0.5f,
 				HAlign = 0.5f,
 			};
@@ -51,7 +47,6 @@ namespace Munchies.UIElements {
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			base.DrawSelf(spriteBatch);
 			if (panel.IsMouseHovering) {
-				//Main.hoverItemName = mod.ModTabName;
 				UICommon.TooltipMouseText(text: HoverText()); // Adds box behind hover text
 			}
 		}

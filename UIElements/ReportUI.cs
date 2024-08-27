@@ -179,7 +179,7 @@ namespace Munchies.UIElements {
 				// All of these have to be set outside, otherwise nothing works
 				tab.Width.Set(tabSize, 0);
 				tab.Height.Set(tabSize, 0);
-				tab.Top.Set(tabSize / 4, 0);
+				tab.Top.Set(spacing, 0);
 				tab.Left.Pixels = spacing + (tabSize * i);
 				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
 				mainPanel.Append(tab);
@@ -213,7 +213,7 @@ namespace Munchies.UIElements {
 			if (Report.ConsumablesList.Count > 1) titleText.SetText(CurrentTab.ModTabName);
 			RedrawConsumablesList();
 			UpdateSelectedTab();
-			SoundEngine.PlaySound(SoundID.Tink);
+			//SoundEngine.PlaySound(SoundID.Tink);
 		}
 
 		internal void RedrawConsumablesList() {

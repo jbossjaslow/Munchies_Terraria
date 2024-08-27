@@ -7,42 +7,39 @@ using Terraria.ModLoader;
 namespace Munchies.Models {
 	public class ConsumableMod {
 		public string ModTabName;
-		public Asset<Texture2D> ModTabTexture;
-		public bool UsingMissingTexture;
+		private Mod mod;
+		private string texturePath;
+		public bool UsingMissingTexture = false;
+		private bool VanillaMod;
 
 		public ConsumableMod(string modTabName, string modTabTexturePath) {
 			ModTabName = modTabName;
-			SetTextureForVanilla(modTabTexturePath);
+			mod = null;
+			texturePath = modTabTexturePath;
+			VanillaMod = true;
 		}
 
 		public ConsumableMod(Mod mod) {
 			ModTabName = mod.DisplayNameClean;
-			SetTextureForExternalMod(mod);
+			this.mod = mod;
+			texturePath = null;
+			VanillaMod = false;
 		}
 
-		private void SetTextureForExternalMod(Mod mod) {
-			if (mod.HasAsset("icon_small")) {
+		public Asset<Texture2D> GetTexture() {
+			if (VanillaMod && texturePath != null && ModContent.HasAsset(texturePath)) {
+				return ModContent.Request<Texture2D>(texturePath);
+			} else if (mod?.HasAsset("icon_small") ?? false) {
 				Asset<Texture2D> texture = mod.Assets.Request<Texture2D>("icon_small", AssetRequestMode.ImmediateLoad); //Dimensions checked for parity with tml so it needs Immediate
 				if (texture.Size() == new Vector2(30)) {
-					ModTabTexture = texture;
-					UsingMissingTexture = false;
+					return texture;
 				} else {
-					ModTabTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
 					UsingMissingTexture = true;
+					return ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
 				}
 			} else {
-				ModTabTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
 				UsingMissingTexture = true;
-			}
-		}
-
-		private void SetTextureForVanilla(string texturePath) {
-			if (ModContent.HasAsset(texturePath)) {
-				ModTabTexture = ModContent.Request<Texture2D>(texturePath);
-				UsingMissingTexture = false;
-			} else {
-				ModTabTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
-				UsingMissingTexture = true;
+				return ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
 			}
 		}
 	}

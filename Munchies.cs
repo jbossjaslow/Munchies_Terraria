@@ -1,5 +1,6 @@
 using Munchies.Models;
 using System;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -33,7 +34,8 @@ namespace Munchies {
 			try {
 				if (args.Length >= 1) {
 					return args[0] switch {
-						"AddConsumable" => HandleAddConsumable(args),
+						"AddSingleConsumable" => HandleAddSingleConsumable(args),
+						"AddMultiUseConsumable" => HandleAddMultiConsumable(args),
 						"AddVanillaConsumable" => HandleAddVanillaConsumable(args),
 						// can add more types of calls here in the future
 						_ => false
@@ -41,13 +43,39 @@ namespace Munchies {
 				} else {
 					return false;
 				}
-			} catch (Exception e) {
-				Logger.Error($"Call Error: {e.StackTrace} {e.Message}");
+			} catch {
+				Logger.Error($"Munchies Call Error");
 			}
 			return "Failure";
 		}
 
-		private bool HandleAddConsumable(params object[] args) {
+		private bool HandleAddSingleConsumable(params object[] args) {
+			Mod mod = null;
+			try {
+				Consumable consumable;
+				mod = args[1] as Mod;
+				ConsumableMod externalMod = new(mod);
+
+				object apiString = args[2];
+				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
+				ModItem item = args[3] as ModItem;
+				Func<bool> hasBeenConsumed = args[5] as Func<bool>;
+
+				consumable = new(
+					modItem: item,
+					CategoryOrCustomColor: args[4],
+					currentCount: () => hasBeenConsumed().ToInt(),
+					totalCount: () => 1
+				);
+
+				return Report.AddConsumableToList(mod: externalMod, consumable: consumable);
+			} catch {
+				Logger.Error($"Error adding consumable from the {mod?.Name ?? "Unknown mod"} mod, see log for details");
+				return false;
+			}
+		}
+
+		private bool HandleAddMultiConsumable(params object[] args) {
 			Mod mod = null;
 			try {
 				Consumable consumable;
@@ -69,15 +97,13 @@ namespace Munchies {
 
 				return Report.AddConsumableToList(mod: externalMod, consumable: consumable);
 			} catch {
-				Logger.Error($"Error adding consumable from the {mod.Name} mod, see log for details");
+				Logger.Error($"Error adding consumable from the {mod?.Name ?? "Unknown mod"} mod, see log for details");
 				return false;
 			}
 		}
 
 		private bool HandleAddVanillaConsumable(params object[] args) {
 			try {
-				ConsumableMod vanillaMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
-
 				object apiString = args[1];
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
 				if (apiVersion != new Version(1, 3, 0)) return false; // exit if not using verison 1.3 of this mod
@@ -93,14 +119,14 @@ namespace Munchies {
 					totalCount: totalCount
 				);
 
-				return Report.AddConsumableToList(mod: vanillaMod, consumable: consumable);
+				return Report.AddConsumableToList(mod: Report.VanillaConsumableMod, consumable: consumable);
 			} catch {
 				Logger.Error($"Error adding vanilla consumable, see log for details");
 				return false;
 			}
 		}
 
-		static ConsumableType GetType(string type) {
+		private static ConsumableType GetType(string type) {
 			if (Enum.TryParse(type, out ConsumableType consumableType)) {
 				return consumableType;
 			} else {

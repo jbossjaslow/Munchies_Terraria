@@ -15,7 +15,7 @@ namespace Munchies.Configuration {
 		[DefaultValue(false)]
 		public bool ResetDragCoords;
 
-		[DefaultValue(false)]
+		[DefaultValue(true)]
 		public bool ShowMultiUseConsumables;
 
 		//public override void OnChanged() {

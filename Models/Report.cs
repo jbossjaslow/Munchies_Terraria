@@ -8,7 +8,7 @@ namespace Munchies.Models {
 		public static ConsumableMod VanillaConsumableMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
 		public static List<ConsumablesEntry> ConsumablesList = [];
 
-		private static int[] VanillaItems => [
+		private static readonly int[] VanillaItems = [
 			// multi-use
 			ItemID.LifeCrystal,
 			ItemID.LifeFruit,
