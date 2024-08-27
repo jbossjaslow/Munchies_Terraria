@@ -65,14 +65,13 @@ namespace Munchies.Models {
 				Texture = ModContent.Request<Texture2D>(texturePath);
 				UsingMissingTexture = false;
 			} else {
-				//AssetDimensions = (6, 16);
-				Texture = ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1", mode: AssetRequestMode.ImmediateLoad);
+				Texture = ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
 				UsingMissingTexture = true;
 			}
 		}
 
 		private void SetTexture(int vanillaItemId) {
-			Texture = ModContent.Request<Texture2D>($"Terraria/Images/Item_{vanillaItemId}", mode: AssetRequestMode.ImmediateLoad);
+			Texture = ModContent.Request<Texture2D>($"Terraria/Images/Item_{vanillaItemId}");
 			UsingMissingTexture = false;
 		}
 
