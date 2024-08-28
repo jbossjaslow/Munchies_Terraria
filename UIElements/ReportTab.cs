@@ -36,7 +36,7 @@ namespace Munchies.UIElements {
 				image.Height.Set(-10f, 1f);
 				image.ScaleToFit = true;
 			}
-			image.OnMouseOver += new MouseEvent(MyMouseOver);
+			//image.OnMouseOver += new MouseEvent(MyMouseOver);
 			panel.Append(image);
 		}
 
@@ -51,13 +51,13 @@ namespace Munchies.UIElements {
 			}
 		}
 
-		private void MyMouseOver(UIMouseEvent evt, UIElement listeningElement) {
-			SoundEngine.PlaySound(SoundID.MenuTick);
-			// 37 anvil
-			// 113 minion spawn
-			// npc_hit_5 sparkle
-			// tinks
-		}
+		//private void MyMouseOver(UIMouseEvent evt, UIElement listeningElement) {
+		//	SoundEngine.PlaySound(SoundID.MenuTick);
+		//	// 37 anvil
+		//	// 113 minion spawn
+		//	// npc_hit_5 sparkle
+		//	// tinks
+		//}
 
 		private string HoverText() {
 			return mod.UsingMissingTexture ? "[MISSING TEXTURE] " + mod.ModTabName : mod.ModTabName;

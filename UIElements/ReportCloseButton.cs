@@ -6,10 +6,6 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace Munchies.UIElements {
-	// This ExampleUIHoverImageButton class inherits from UIImageButton. 
-	// Inheriting is a great tool for UI design. 
-	// By inheriting, we get the Image drawing, MouseOver sound, and fading for free from UIImageButton
-	// We've added some code to allow the Button to show a text tooltip while hovered
 	internal class ReportCloseButton(Asset<Texture2D> texture, string hoverText, Color color): UIImageButton(texture: texture) {
 		// Tooltip text that will be shown on hover
 		//internal string hoverText = hoverText;

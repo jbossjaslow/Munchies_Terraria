@@ -42,8 +42,6 @@ namespace Munchies.UIElements {
 			itemImage.VAlign = 0.5f;
 			panel.Append(itemImage);
 
-			AddCheckMarkOrCount();
-
 			text = new(text: Consumable.DisplayText) {
 				TextColor = Consumable.CustomTextColor ?? DisplayTextColor,
 				ShadowColor = Color.Black,
@@ -55,22 +53,10 @@ namespace Munchies.UIElements {
 			};
 			text.Left.Set(imageAssetMaxWidth + (spacing * 2), 0f);
 			text.SetPadding(0);
-
 			panel.Append(text);
 
-			// If text is too long to fit, scale it down --> DynamicallyScaleDownToWidth doesn't appear to do anything on its own, at least how I have everything setup
-			CalculatedStyle textDimensions = text.GetInnerDimensions();
-			float restOfPanelWidths;
-			if (CheckMarkOrRatioTextWidth == 0) {
-				restOfPanelWidths = imageAssetMaxWidth + (spacing * 3); // 2 elements means 3 spacers
-			} else {
-				restOfPanelWidths = CheckMarkOrRatioTextWidth + imageAssetMaxWidth + (spacing * 4); // 3 elements means 4 spacers
-			}
-			float maxTextWidth = panel.GetDimensions().Width - restOfPanelWidths;
-			if (textDimensions.Width > maxTextWidth) {
-				float newScale = maxTextWidth / textDimensions.Width;
-				text.SetText(text: Consumable.DisplayText, textScale: newScale, large: false);
-			}
+			AddCheckMarkOrCount();
+			UpdateTextScale();
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -122,6 +108,22 @@ namespace Munchies.UIElements {
 				// At this point, total count must be 1, and if HasBeenConsumed (current == total) is false, then it's a 1x consumable and we should show nothing
 				CheckMarkOrRatioTextWidth = 0;
 				return;
+			}
+		}
+
+		public void UpdateTextScale() {
+			// If text is too long to fit, scale it down --> DynamicallyScaleDownToWidth doesn't appear to do anything on its own, at least how I have everything setup
+			CalculatedStyle textDimensions = text.GetInnerDimensions();
+			float restOfPanelWidths;
+			if (CheckMarkOrRatioTextWidth == 0) {
+				restOfPanelWidths = imageAssetMaxWidth + (spacing * 3); // 2 elements means 3 spacers
+			} else {
+				restOfPanelWidths = CheckMarkOrRatioTextWidth + imageAssetMaxWidth + (spacing * 4); // 3 elements means 4 spacers
+			}
+			float maxTextWidth = panel.GetDimensions().Width - restOfPanelWidths;
+			if (textDimensions.Width > maxTextWidth) {
+				float newScale = maxTextWidth / textDimensions.Width;
+				text.SetText(text: Consumable.DisplayText, textScale: newScale, large: false);
 			}
 		}
 		#endregion

@@ -179,7 +179,7 @@ namespace Munchies.UIElements {
 				// All of these have to be set outside, otherwise nothing works
 				tab.Width.Set(tabSize, 0);
 				tab.Height.Set(tabSize, 0);
-				tab.Top.Set(spacing, 0);
+				tab.Top.Set(0, 0);
 				tab.Left.Pixels = spacing + (tabSize * i);
 				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
 				mainPanel.Append(tab);
@@ -237,6 +237,7 @@ namespace Munchies.UIElements {
 			foreach (ReportListItem item in reportList.Cast<ReportListItem>()) {
 				if (usedItem.type == item.Consumable.ID) {
 					item.AddCheckMarkOrCount();
+					item.UpdateTextScale();
 				}
 			}
 		}
