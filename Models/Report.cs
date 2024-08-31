@@ -7,7 +7,7 @@ namespace Munchies.Models {
 	public class Report {
 		public static ConsumableMod VanillaConsumableMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
 		public static List<ConsumablesEntry> ConsumablesList = [];
-        private LocalizedText ExpertExtraTooltip;
+		private LocalizedText ExpertExtraTooltip;
 		private LocalizedText WorldExtraTooltip;
 
 		private static readonly int[] VanillaItems = [
