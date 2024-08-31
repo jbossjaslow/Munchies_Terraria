@@ -19,10 +19,12 @@ namespace Munchies.UIElements {
 		DraggablePanel mainPanel = new();
 		public UIPanel reportPanel;
 		public UIList reportList = [];
-		public UIText titleText = new("Consumables");
+		public UIText titleText = new(Munchies.instance.GetLocalization("UI.Report.Consumables"));
 		public UIImage completionStar;
 
-		readonly float spacing = 8f;
+		public LocalizedText completedText = Munchies.instance.GetLocalization("UI.Report.Completed");
+
+        readonly float spacing = 8f;
 		readonly float panelWidth = 300f;
 		readonly float panelHeight = 500f;
 		public static readonly float tabSize = 36f;
@@ -80,7 +82,7 @@ namespace Munchies.UIElements {
 				Main.player[Main.myPlayer].mouseInterface = true;
 			}
 			if (completionStar?.IsMouseHovering ?? false) {
-				UICommon.TooltipMouseText(text: $"{CurrentTab.ModTabName} Completed!");
+				UICommon.TooltipMouseText(completedText.Format(CurrentTab.ModTabName));
 			}
 		}
 
