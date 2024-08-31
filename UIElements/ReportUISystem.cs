@@ -21,7 +21,7 @@ namespace Munchies.UIElements {
 		public static float ChecklistLeftPos;
 		public static float ChecklistTopPos;
 
-		public override void Load() {
+		public override void OnModLoad() {
 			if (!Main.dedServ) {
 				Instance = this;
 
@@ -36,7 +36,7 @@ namespace Munchies.UIElements {
 			}
 		}
 
-		public override void Unload() {
+		public override void OnModUnload() {
 			ReportUI = null;
 		}
 

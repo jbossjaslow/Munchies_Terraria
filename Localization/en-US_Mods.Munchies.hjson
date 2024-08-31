@@ -21,11 +21,20 @@ Configs: {
 	}
 }
 
-Mods: {
-	Munchies: {
-		ConsumableTypes: {
-			player_expert.Tooltip: "[Expert Only]"
-			world.Tooltip: "[Once per World]"
-		}
+Common.ConcatenateNewline:
+	'''
+	{0}
+	{1}
+	'''
+
+ConsumableTypes: {
+	player_expert.Tooltip: "[Expert Only]"
+	world.Tooltip: "[Once per World]"
+}
+
+UI: {
+	Report: {
+		Consumables: Consumables
+		Completed: "{0} Completed!"
 	}
 }

@@ -11,6 +11,7 @@ namespace Munchies {
 	public class Munchies: Mod {
 		internal static Munchies instance;
 		internal static Report report;
+		internal static LocalizedText ConcatenateNewline;
 
 		internal static ModKeybind ToggleReportHotKey;
 
@@ -20,9 +21,10 @@ namespace Munchies {
 		public override void Load() {
 			instance = this;
 
-			report ??= new(); // initialize the report if it is null
-
+			ConcatenateNewline = this.GetLocalization("Common.ConcatenateNewline");
 			ToggleReportHotKey = KeybindLoader.RegisterKeybind(this, "ToggleReport", "K");
+
+			report ??= new(); // initialize the report if it is null
 		}
 
 		public override void Unload() {

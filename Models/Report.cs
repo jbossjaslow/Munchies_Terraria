@@ -37,8 +37,9 @@ namespace Munchies.Models {
 		];
 
 		public Report() {
-			ExpertExtraTooltip = Language.GetText("Mods.Munchies.ConsumableTypes.player_expert.Tooltip");
-			WorldExtraTooltip = Language.GetText("Mods.Munchies.ConsumableTypes.world.Tooltip");
+			ExpertExtraTooltip = Munchies.instance.GetLocalization("ConsumableTypes.player_expert.Tooltip");
+			WorldExtraTooltip = Munchies.instance.GetLocalization("ConsumableTypes.world.Tooltip");
+
 			List<Consumable> vanillaConsumables = [
 
 				new(vanillaItemId: ItemID.LifeCrystal, type: ConsumableType.multiUse, currentCount: () => Main.LocalPlayer.ConsumedLifeCrystals, totalCount: () => 15, extraTooltip: null),
