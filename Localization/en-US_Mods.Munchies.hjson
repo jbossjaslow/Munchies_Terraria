@@ -20,3 +20,12 @@ Configs: {
 		}
 	}
 }
+
+Mods: {
+	Munchies: {
+		ConsumableTypes: {
+			player_expert.Tooltip: "[Expert Only]"
+			world.Tooltip: "[Once per World]"
+		}
+	}
+}

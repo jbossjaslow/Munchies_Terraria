@@ -1,12 +1,14 @@
-using Munchies.Utilities;
 using System.Collections.Generic;
-using System.Linq;
+using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace Munchies.Models {
 	public class Report {
 		public static ConsumableMod VanillaConsumableMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
 		public static List<ConsumablesEntry> ConsumablesList = [];
+		private LocalizedText ExpertExtraTooltip;
+		private LocalizedText WorldExtraTooltip;
 
 		private static readonly int[] VanillaItems = [
 			// multi-use
@@ -35,10 +37,33 @@ namespace Munchies.Models {
 		];
 
 		public Report() {
-			List<Consumable> vanillaConsumables = VanillaItems
-				.Select(id => new Consumable(vanillaItemId: id))
-				.ToList();
+			ExpertExtraTooltip = Language.GetText("Mods.Munchies.ConsumableTypes.player_expert.Tooltip");
+			WorldExtraTooltip = Language.GetText("Mods.Munchies.ConsumableTypes.world.Tooltip");
+			List<Consumable> vanillaConsumables = [
 
+				new(vanillaItemId: ItemID.LifeCrystal, type: ConsumableType.multiUse, currentCount: () => Main.LocalPlayer.ConsumedLifeCrystals, totalCount: () => 15, extraTooltip: null),
+				new(vanillaItemId: ItemID.LifeFruit, type: ConsumableType.multiUse, currentCount: () => Main.LocalPlayer.ConsumedLifeFruit, totalCount: () => 20, extraTooltip: null), 
+				new(vanillaItemId: ItemID.ManaCrystal, type: ConsumableType.multiUse, currentCount: () => Main.LocalPlayer.ConsumedManaCrystals, totalCount: () => 9, extraTooltip: null), 
+
+				// normal
+				new(vanillaItemId: ItemID.ArtisanLoaf, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.ateArtisanBread.ToInt(), totalCount: () => 1, extraTooltip: null), 
+				new(vanillaItemId: ItemID.TorchGodsFavor, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.unlockedBiomeTorches.ToInt(), totalCount: () => 1, extraTooltip: null), 
+				new(vanillaItemId: ItemID.AegisCrystal, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedAegisCrystal.ToInt(), totalCount: () => 1, extraTooltip: null), 
+				new(vanillaItemId: ItemID.AegisFruit, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedAegisFruit.ToInt(), totalCount: () => 1, extraTooltip: null), 
+				new(vanillaItemId: ItemID.ArcaneCrystal, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedArcaneCrystal.ToInt(), totalCount: () => 1, extraTooltip: null), 
+				new(vanillaItemId: ItemID.Ambrosia, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedAmbrosia.ToInt(), totalCount: () => 1, extraTooltip: null), 
+				new(vanillaItemId: ItemID.GummyWorm, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedGummyWorm.ToInt(), totalCount: () => 1, extraTooltip: null), 
+				new(vanillaItemId: ItemID.GalaxyPearl, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedGalaxyPearl.ToInt(), totalCount: () => 1, extraTooltip: null), 
+
+				// expert
+				new(vanillaItemId: ItemID.DemonHeart, type: ConsumableType.player_expert, currentCount: () => Main.LocalPlayer.CanDemonHeartAccessoryBeShown().ToInt(), totalCount: () => 1, extraTooltip: ExpertExtraTooltip), 
+				new(vanillaItemId: ItemID.MinecartPowerup, type: ConsumableType.player_expert, currentCount: () => Main.LocalPlayer.unlockedSuperCart.ToInt(), totalCount: () => 1, extraTooltip: ExpertExtraTooltip), 
+
+				// world
+				new(vanillaItemId: ItemID.CombatBook, type: ConsumableType.world, currentCount: () => NPC.combatBookWasUsed.ToInt(), totalCount: () => 1, extraTooltip: WorldExtraTooltip), 
+				new(vanillaItemId: ItemID.CombatBookVolumeTwo, type: ConsumableType.world, currentCount: () => NPC.combatBookVolumeTwoWasUsed.ToInt(), totalCount: () => 1, extraTooltip: WorldExtraTooltip), 
+				new(vanillaItemId: ItemID.PeddlersSatchel, type: ConsumableType.world, currentCount: () => NPC.peddlersSatchelWasUsed.ToInt(), totalCount: () => 1, extraTooltip: WorldExtraTooltip), 
+			];
 			ConsumablesList.Add(new(VanillaConsumableMod, vanillaConsumables));
 		}
 

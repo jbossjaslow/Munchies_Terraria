@@ -2,6 +2,7 @@ using Munchies.Models;
 using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace Munchies {
@@ -60,12 +61,14 @@ namespace Munchies {
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
 				ModItem item = args[3] as ModItem;
 				Func<bool> hasBeenConsumed = args[5] as Func<bool>;
+				LocalizedText extraTooltip = args.Length >= 7 ? args[6] as LocalizedText : null;
 
 				consumable = new(
 					modItem: item,
 					CategoryOrCustomColor: args[4],
 					currentCount: () => hasBeenConsumed().ToInt(),
-					totalCount: () => 1
+					totalCount: () => 1,
+					extraTooltip: extraTooltip
 				);
 
 				return Report.AddConsumableToList(mod: externalMod, consumable: consumable);
@@ -87,12 +90,14 @@ namespace Munchies {
 				ModItem item = args[3] as ModItem;
 				Func<int> currentCount = args[5] as Func<int>;
 				Func<int> totalCount = args[6] as Func<int>;
+				LocalizedText extraTooltip = args.Length >= 8 ? args[7] as LocalizedText : null;
 
 				consumable = new(
 					modItem: item,
 					CategoryOrCustomColor: args[4],
 					currentCount: currentCount,
-					totalCount: totalCount
+					totalCount: totalCount,
+					extraTooltip: extraTooltip
 				);
 
 				return Report.AddConsumableToList(mod: externalMod, consumable: consumable);
@@ -111,12 +116,14 @@ namespace Munchies {
 				int itemId = int.Parse(args[2] as string);
 				Func<int> currentCount = args[4] as Func<int>;
 				Func<int> totalCount = args[5] as Func<int>;
+				LocalizedText extraTooltip = args.Length >= 7 ? args[6] as LocalizedText : null;
 
 				Consumable consumable = new(
 					vanillaItemId: itemId,
 					type: GetType(args[3] as string),
 					currentCount: currentCount,
-					totalCount: totalCount
+					totalCount: totalCount,
+					extraTooltip: extraTooltip
 				);
 
 				return Report.AddConsumableToList(mod: Report.VanillaConsumableMod, consumable: consumable);

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Munchies.Configuration;
 using Terraria.GameInput;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Munchies.UIElements {
 	class ReportUI : UIState {
@@ -41,10 +42,12 @@ namespace Munchies.UIElements {
 				if (_currentTab == value) return;
 
 				_currentTab = value;
+				UpdateCurrentConsumables(_currentTab.ModTabName);
 				//RedrawConsumablesList();
 			}
 		}
 		public List<ReportTab> tabs = [];
+		public List<Consumable> CurrentConsumables = [];
 
 		public static bool Visible => ReportUISystem._reportUI.CurrentState == ReportUISystem.Instance.ReportUI;
 		public static void SetVisible(bool newValue, bool playCloseSound = true) {
@@ -88,6 +91,12 @@ namespace Munchies.UIElements {
 		}
 
 		#region Initialize UI
+		//public override void OnInitialize() {
+		//	base.OnInitialize();
+
+		//	CurrentTab = Report.VanillaConsumableMod;
+		//}
+
 		private void InitializeUI() {
 			CurrentTab = Report.VanillaConsumableMod;
 
@@ -140,6 +149,7 @@ namespace Munchies.UIElements {
 			titleText.SetPadding(0f);
 			titleText.Top.Set(10f, 0f);
 			reportPanel.Append(titleText);
+			UpdateTitleTextSize();
 
 			string closeTextLocalized = Language.GetTextValue("LegacyInterface.52"); // Localized text for "Close"
 			ReportCloseButton closeButton = new(buttonDeleteTexture, closeTextLocalized, Color.Red);
@@ -198,6 +208,16 @@ namespace Munchies.UIElements {
 			}
 		}
 
+		private void UpdateTitleTextSize() {
+			Recalculate();
+			CalculatedStyle textDimensions = titleText.GetInnerDimensions();
+			float maxTextWidth = panelWidth - 80; // (32px from right side + 8px spacing) * 2 = 80
+			if (textDimensions.Width > maxTextWidth) {
+				float newScale = maxTextWidth / textDimensions.Width;
+				titleText.SetText(text: CurrentTab.ModTabName, textScale: newScale * 1.5f, large: false);
+			}
+		}
+
 		#endregion
 
 		#region User Interaction
@@ -210,7 +230,9 @@ namespace Munchies.UIElements {
 			if (mod == null || CurrentTab == mod) return;
 
 			CurrentTab = mod;
-			if (Report.ConsumablesList.Count > 1) titleText.SetText(CurrentTab.ModTabName);
+			if (Report.ConsumablesList.Count > 1) titleText.SetText(text: CurrentTab.ModTabName, textScale: 1.5f, large: false);
+			UpdateTitleTextSize();
+
 			RedrawConsumablesList();
 			UpdateSelectedTab();
 			//SoundEngine.PlaySound(SoundID.Tink);
@@ -233,7 +255,7 @@ namespace Munchies.UIElements {
 		}
 
 		public void UpdateConsumablesList(Item usedItem) {
-			// This method is only called when the used item is already found in the CurrentConsumables list, so this extra forEach and Cast shouldn't have much of a performance impact
+			// This method is only called when the used item is already found in the UpdateCurrentConsumables list, so this extra forEach and Cast shouldn't have much of a performance impact
 			foreach (ReportListItem item in reportList.Cast<ReportListItem>()) {
 				if (usedItem.type == item.Consumable.ID) {
 					item.AddCheckMarkOrCount();
@@ -246,7 +268,11 @@ namespace Munchies.UIElements {
 
 		#region Helper methods
 
-		public List<Consumable> CurrentConsumables => Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == CurrentTab.ModTabName).Consumables;
+		private void UpdateCurrentConsumables(string modName) {
+			if (CurrentTab == null || Report.ConsumablesList == null) return;
+
+			CurrentConsumables = Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == modName).Consumables;
+		}
 
 		#endregion
 	}
