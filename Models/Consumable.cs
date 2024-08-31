@@ -29,9 +29,7 @@ namespace Munchies.Models {
 			SetTexture(modItem.Texture);
 			ID = modItem.Type;
 
-			if (extraTooltip != null) {
-				HoverText = HoverText.WithFormatArgs(HoverText, extraTooltip);
-			}
+			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip); 
 
 			if (CategoryOrCustomColor is Color color) CustomTextColor = color;
 			else if (CategoryOrCustomColor is string categoryName) Type = GetModdedType(categoryName);
@@ -46,7 +44,7 @@ namespace Munchies.Models {
 			Type = type;
 			ID = vanillaItemId;
 
-			if (extraTooltip != null) HoverText = HoverText.WithFormatArgs(HoverText, extraTooltip);
+			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
 		}
 		#endregion
 
