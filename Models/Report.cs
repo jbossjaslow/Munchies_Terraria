@@ -37,8 +37,8 @@ namespace Munchies.Models {
 		];
 
 		public Report() {
-            ExpertExtraTooltip = Munchies.instance.GetLocalization("ConsumableTypes.player_expert.Tooltip");
-            WorldExtraTooltip = Munchies.instance.GetLocalization("ConsumableTypes.world.Tooltip");
+			ExpertExtraTooltip = Munchies.instance.GetLocalization("ConsumableTypes.player_expert.Tooltip");
+			WorldExtraTooltip = Munchies.instance.GetLocalization("ConsumableTypes.world.Tooltip");
 
 			List<Consumable> vanillaConsumables = [
 

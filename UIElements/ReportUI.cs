@@ -24,7 +24,7 @@ namespace Munchies.UIElements {
 
 		public LocalizedText completedText = Munchies.instance.GetLocalization("UI.Report.Completed");
 
-        readonly float spacing = 8f;
+		readonly float spacing = 8f;
 		readonly float panelWidth = 300f;
 		readonly float panelHeight = 500f;
 		public static readonly float tabSize = 36f;
