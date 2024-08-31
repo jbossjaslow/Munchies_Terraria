@@ -11,8 +11,7 @@ using Terraria.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Munchies.Configuration;
-using Terraria.GameInput;
-using static System.Net.Mime.MediaTypeNames;
+using Terraria.ModLoader.UI;
 
 namespace Munchies.UIElements {
 	class ReportUI : UIState {
@@ -21,7 +20,7 @@ namespace Munchies.UIElements {
 		public UIPanel reportPanel;
 		public UIList reportList = [];
 		public UIText titleText = new("Consumables");
-		//public UIMessageBox messageBox; // UIMessageBox from BossChecklist
+		public UIImage completionStar;
 
 		readonly float spacing = 8f;
 		readonly float panelWidth = 300f;
@@ -34,6 +33,9 @@ namespace Munchies.UIElements {
 		public static readonly Color BackgroundColor = new(73, 94, 171);
 
 		public static Asset<Texture2D> buttonDeleteTexture;
+		public static Asset<Texture2D> completionTexture;
+
+		public List<ConsumableMod> completedTabs = [];
 
 		private ConsumableMod _currentTab;
 		public ConsumableMod CurrentTab {
@@ -77,6 +79,9 @@ namespace Munchies.UIElements {
 			if(mainPanel.ContainsPoint(MousePosition)) {
 				Main.player[Main.myPlayer].mouseInterface = true;
 			}
+			if (completionStar?.IsMouseHovering ?? false) {
+				UICommon.TooltipMouseText(text: $"{CurrentTab.ModTabName} Completed!");
+			}
 		}
 
 		public void PresentUI() {
@@ -87,6 +92,7 @@ namespace Munchies.UIElements {
 				UpdateSelectedTab();
 			}
 
+			CheckForCompletion();
 			Main.playerInventory = false;
 		}
 
@@ -102,7 +108,7 @@ namespace Munchies.UIElements {
 
 			InitializePanel();
 
-			InitializeTitleTextAndCloseButton();
+			InitializeHeaderUI();
 
 			InitializeListAndScrollBar();
 
@@ -138,8 +144,8 @@ namespace Munchies.UIElements {
 			mainPanel.Recalculate();
 		}
 
-		private void InitializeTitleTextAndCloseButton() {
-			string text = Report.ConsumablesList.Count > 1 ? "Terraria" : "Consumables";
+		private void InitializeHeaderUI() {
+			string text = Report.ConsumablesList.Count > 1 ? Report.VanillaConsumableMod.ModTabName : "Consumables";
 			titleText = new(text: text, textScale: 1.5f) {
 				TextColor = Color.White,
 				ShadowColor = Color.Black,
@@ -160,6 +166,13 @@ namespace Munchies.UIElements {
 			closeButton.Height.Set(22f, 0f);
 			closeButton.OnLeftClick += new MouseEvent(CloseButtonClicked);
 			reportPanel.Append(closeButton);
+
+			completionStar = new(completionTexture);
+			completionStar.Left.Set(10, 0);
+			completionStar.Top.Set(10, 0f);
+			completionStar.Width.Set(completionTexture.Width(), 0f);
+			completionStar.Height.Set(completionTexture.Height(), 0f);
+			completionStar.SetPadding(0);
 		}
 
 		private void InitializeListAndScrollBar() {
@@ -235,6 +248,7 @@ namespace Munchies.UIElements {
 
 			RedrawConsumablesList();
 			UpdateSelectedTab();
+			CheckForCompletion();
 			//SoundEngine.PlaySound(SoundID.Tink);
 		}
 
@@ -260,6 +274,8 @@ namespace Munchies.UIElements {
 				if (usedItem.type == item.Consumable.ID) {
 					item.AddCheckMarkOrCount();
 					item.UpdateTextScale();
+					CheckForCompletion();
+					return;
 				}
 			}
 		}
@@ -272,6 +288,25 @@ namespace Munchies.UIElements {
 			if (CurrentTab == null || Report.ConsumablesList == null) return;
 
 			CurrentConsumables = Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == modName).Consumables;
+		}
+
+		private void CheckForCompletion() {
+			completionStar.Remove();
+			if (completedTabs.Contains(CurrentTab)) {
+				reportPanel.Append(completionStar);
+				return;
+			}
+
+			// current tab has not been evaluated
+			foreach(Consumable consumable in CurrentConsumables) {
+				if (!consumable.HasBeenConsumed) {
+					return;
+				}
+			}
+			
+			// at this point, all consumables have been consumed. Add to completed tabs list
+			completedTabs.Add(CurrentTab);
+			reportPanel.Append(completionStar);
 		}
 
 		#endregion

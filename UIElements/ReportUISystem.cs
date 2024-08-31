@@ -32,6 +32,7 @@ namespace Munchies.UIElements {
 
 				ReportListItem.CheckMarkTexture = Mod.Assets.Request<Texture2D>("UIElements/checkMark");
 				ReportUI.buttonDeleteTexture = Mod.Assets.Request<Texture2D>("UIElements/xMark");
+				ReportUI.completionTexture = ModContent.Request<Texture2D>("Terraria/Images/Item_4954"); // 4143
 			}
 		}
 
