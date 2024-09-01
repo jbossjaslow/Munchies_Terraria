@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Munchies.Models;
 using Munchies.Models.Enums;
 using Munchies.Utilities;
@@ -65,14 +66,17 @@ namespace Munchies {
 				object apiString = args[2];
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
 				ModItem item = args[3] as ModItem;
+				string categoryName = args[4] as string;
 				Func<bool> hasBeenConsumed = args[5] as Func<bool>;
-				string difficulty = args.Length >= 7 ? args[6] as string : "classic";
-				LocalizedText extraTooltip = args.Length >= 8 ? args[7] as LocalizedText : null;
-				Func<bool> isAvailable = args.Length >= 9 ? args[8] as Func<bool> : null;
+				object customColorObject = args.Length >= 7 ? args[6] : null;
+				string difficulty = args.Length >= 8 ? args[7] as string : "classic";
+				LocalizedText extraTooltip = args.Length >= 9 ? args[8] as LocalizedText : null;
+				Func<bool> isAvailable = args.Length >= 10 ? args[9] as Func<bool> : null;
 
 				Consumable consumable = new(
 					modItem: item,
-					CategoryOrCustomColor: args[4],
+					categoryName: categoryName,
+					CustomColor: (Color?)customColorObject,
 					currentCount: () => hasBeenConsumed().ToInt(),
 					totalCount: () => 1,
 					difficulty: difficulty,
@@ -96,15 +100,18 @@ namespace Munchies {
 				object apiString = args[2];
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
 				ModItem item = args[3] as ModItem;
+				string categoryName = args[4] as string;
 				Func<int> currentCount = args[5] as Func<int>;
 				Func<int> totalCount = args[6] as Func<int>;
-				string difficulty = args.Length >= 8 ? args[7] as string : "classic";
-				LocalizedText extraTooltip = args.Length >= 9 ? args[8] as LocalizedText : null;
-				Func<bool> isAvailable = args.Length >= 10 ? args[9] as Func<bool> : null;
+				object customColorObject = args.Length >= 8 ? args[7] : null;
+				string difficulty = args.Length >= 9 ? args[8] as string : "classic";
+				LocalizedText extraTooltip = args.Length >= 10 ? args[9] as LocalizedText : null;
+				Func<bool> isAvailable = args.Length >= 11 ? args[10] as Func<bool> : null;
 
 				Consumable consumable = new(
 					modItem: item,
-					CategoryOrCustomColor: args[4],
+					categoryName: categoryName,
+					CustomColor: (Color?)customColorObject,
 					currentCount: currentCount,
 					totalCount: totalCount,
 					difficulty: difficulty,

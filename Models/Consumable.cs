@@ -14,7 +14,7 @@ namespace Munchies.Models {
 		public LocalizedText DisplayText;
 		public LocalizedText HoverText;
 		public Asset<Texture2D> Texture;
-		public ConsumableType? Type;
+		public ConsumableType Type;
 		public Color? CustomTextColor;
 		public Func<int> CurrentCount; // How many of the item have been consumed; for bools (aka single use consumables), this is either 0 or 1
 		public Func<int> TotalCount; // Total number of items that can be consumed; for bools, this is 1
@@ -26,7 +26,7 @@ namespace Munchies.Models {
 		public LocalizedText DifficultyText = LocalizedText.Empty;
 
 		#region Init
-		public Consumable(ModItem modItem, object CategoryOrCustomColor, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
+		public Consumable(ModItem modItem, string categoryName, Color? CustomColor, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
 			DisplayText = modItem.DisplayName;
 			HoverText = modItem.Tooltip;
 			CurrentCount = currentCount;
@@ -35,13 +35,12 @@ namespace Munchies.Models {
 			ID = modItem.Type;
 			Difficulty = difficulty;
 			Available = available ?? AlwaysTrue;
+			Type = GetModdedType(categoryName);
+			CustomTextColor = CustomColor;
 
 			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
 
-			if (CategoryOrCustomColor is Color color) CustomTextColor = color;
-			else if (CategoryOrCustomColor is string categoryName) Type = GetModdedType(categoryName);
-
-			if (Type != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type.Value));
+			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type));
 
 			SetDifficultyText(difficulty);
 		}
@@ -59,7 +58,7 @@ namespace Munchies.Models {
 
 			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
 
-			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type.Value));
+			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type));
 
 			SetDifficultyText(difficulty);
 		}
