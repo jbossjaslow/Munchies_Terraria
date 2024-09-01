@@ -37,6 +37,32 @@ namespace Munchies {
 			ToggleReportHotKey = null;
 		}
 
+		public override void PostSetupContent() {
+			object[] args = [
+						"AddVanillaConsumable",
+						"1.3",
+						549,
+						"player",
+						() => true,
+						null,
+						null,
+						null
+					];
+			Call(args);
+			object[] args2 = [
+				"AddVanillaMultiUseConsumable",
+						"1.3",
+						575,
+						"player",
+						() => 7,
+						() => 10,
+						null,
+						null,
+						null
+			];
+			Call(args2);
+		}
+
 		public override object Call(params object[] args) {
 			try {
 				if (args.Length >= 1) {
