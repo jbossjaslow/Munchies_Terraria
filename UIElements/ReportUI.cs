@@ -211,7 +211,7 @@ namespace Munchies.UIElements {
 				tab.Height.Set(tabSize, 0);
 				tab.Top.Set(0, 0);
 				tab.Left.Pixels = spacing + (tabSize * i);
-				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
+				tab.panel.BackgroundColor = (tab.mod.SameAs(CurrentTab)) ? Color.ForestGreen : BackgroundColor;
 				mainPanel.Append(tab);
 				tabs.Add(tab);
 			}
@@ -224,7 +224,7 @@ namespace Munchies.UIElements {
 			if (CurrentTab == null) return;
 
 			foreach(ReportTab tab in tabs) {
-				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
+				tab.panel.BackgroundColor = (tab.mod.SameAs(CurrentTab)) ? Color.ForestGreen : BackgroundColor;
 			}
 		}
 

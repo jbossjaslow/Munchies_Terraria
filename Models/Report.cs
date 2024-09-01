@@ -64,7 +64,7 @@ namespace Munchies.Models {
 		}
 
 		internal static ConsumablesEntry GetModEntryOrAddIfNeeded(ConsumableMod mod) {
-			ConsumablesEntry foundEntry = ConsumablesList.Find(e => e.Mod.ModTabName == mod.ModTabName);
+			ConsumablesEntry foundEntry = ConsumablesList.Find(e => e.Mod.SameAs(mod));
 			if (foundEntry != null) {
 				return foundEntry;
 			} else {
