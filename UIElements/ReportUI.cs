@@ -11,7 +11,7 @@ using Terraria.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Munchies.Configuration;
-using Terraria.GameInput;
+using Terraria.ModLoader.UI;
 
 namespace Munchies.UIElements {
 	class ReportUI : UIState {
@@ -19,20 +19,30 @@ namespace Munchies.UIElements {
 		DraggablePanel mainPanel = new();
 		public UIPanel reportPanel;
 		public UIList reportList = [];
-		public UIText titleText = new("Consumables");
-		//public UIMessageBox messageBox; // UIMessageBox from BossChecklist
+		public UIText titleText = new(Munchies.instance.GetLocalization("UI.Report.Consumables"));
+		public UIImage completionStar;
+
+		public LocalizedText completedText = Munchies.instance.GetLocalization("UI.Report.Completed");
 
 		readonly float spacing = 8f;
 		readonly float panelWidth = 300f;
 		readonly float panelHeight = 500f;
 		public static readonly float tabSize = 36f;
 
-		private bool HasBeenInitialized = false;
+		public bool HasBeenInitialized = false;
 		private bool mainPanelPosSetFromSavedPos = false;
 
 		public static readonly Color BackgroundColor = new(73, 94, 171);
 
 		public static Asset<Texture2D> buttonDeleteTexture;
+		public static Asset<Texture2D> completionTexture;
+
+		public static Asset<Texture2D> classicDifficultyTexture;
+		public static Asset<Texture2D> expertDifficultyTexture;
+		public static Asset<Texture2D> masterDifficultyTexture;
+		public static Asset<Texture2D> customModDifficultyTexture;
+
+		public List<ConsumableMod> completedTabs = [];
 
 		private ConsumableMod _currentTab;
 		public ConsumableMod CurrentTab {
@@ -41,10 +51,12 @@ namespace Munchies.UIElements {
 				if (_currentTab == value) return;
 
 				_currentTab = value;
-				//UpdateConsumablesList();
+				UpdateCurrentConsumables(_currentTab.ModTabName);
+				//RedrawConsumablesList();
 			}
 		}
 		public List<ReportTab> tabs = [];
+		public List<Consumable> CurrentConsumables = [];
 
 		public static bool Visible => ReportUISystem._reportUI.CurrentState == ReportUISystem.Instance.ReportUI;
 		public static void SetVisible(bool newValue, bool playCloseSound = true) {
@@ -74,26 +86,36 @@ namespace Munchies.UIElements {
 			if(mainPanel.ContainsPoint(MousePosition)) {
 				Main.player[Main.myPlayer].mouseInterface = true;
 			}
+			if (completionStar?.IsMouseHovering ?? false) {
+				UICommon.TooltipMouseText(completedText.Format(CurrentTab.ModTabName));
+			}
 		}
 
 		public void PresentUI() {
-			InitializeUI();
-			//InitializeTabs();
-			UpdateConsumablesList();
-			UpdateSelectedTab();
+			if (!HasBeenInitialized) {
+				HasBeenInitialized = true;
+				InitializeUI();
+				RedrawConsumablesList();
+				UpdateSelectedTab();
+			}
+
+			CheckForCompletion();
 			Main.playerInventory = false;
 		}
 
 		#region Initialize UI
+		//public override void OnInitialize() {
+		//	base.OnInitialize();
+
+		//	CurrentTab = Report.VanillaConsumableMod;
+		//}
+
 		private void InitializeUI() {
-			if (HasBeenInitialized) return;
-			HasBeenInitialized = true;
-			//Munchies.report ??= new(); // initialize the report if it is null
 			CurrentTab = Report.VanillaConsumableMod;
 
 			InitializePanel();
 
-			InitializeTitleTextAndCloseButton();
+			InitializeHeaderUI();
 
 			InitializeListAndScrollBar();
 
@@ -129,8 +151,8 @@ namespace Munchies.UIElements {
 			mainPanel.Recalculate();
 		}
 
-		private void InitializeTitleTextAndCloseButton() {
-			string text = Report.ConsumablesList.Count > 1 ? "Terraria" : "Consumables";
+		private void InitializeHeaderUI() {
+			string text = Report.ConsumablesList.Count > 1 ? Report.VanillaConsumableMod.ModTabName : "Consumables";
 			titleText = new(text: text, textScale: 1.5f) {
 				TextColor = Color.White,
 				ShadowColor = Color.Black,
@@ -140,6 +162,7 @@ namespace Munchies.UIElements {
 			titleText.SetPadding(0f);
 			titleText.Top.Set(10f, 0f);
 			reportPanel.Append(titleText);
+			UpdateTitleTextSize();
 
 			string closeTextLocalized = Language.GetTextValue("LegacyInterface.52"); // Localized text for "Close"
 			ReportCloseButton closeButton = new(buttonDeleteTexture, closeTextLocalized, Color.Red);
@@ -150,6 +173,13 @@ namespace Munchies.UIElements {
 			closeButton.Height.Set(22f, 0f);
 			closeButton.OnLeftClick += new MouseEvent(CloseButtonClicked);
 			reportPanel.Append(closeButton);
+
+			completionStar = new(completionTexture);
+			completionStar.Left.Set(10, 0);
+			completionStar.Top.Set(10, 0f);
+			completionStar.Width.Set(completionTexture.Width(), 0f);
+			completionStar.Height.Set(completionTexture.Height(), 0f);
+			completionStar.SetPadding(0);
 		}
 
 		private void InitializeListAndScrollBar() {
@@ -179,13 +209,9 @@ namespace Munchies.UIElements {
 				// All of these have to be set outside, otherwise nothing works
 				tab.Width.Set(tabSize, 0);
 				tab.Height.Set(tabSize, 0);
-				//tab.HAlign = 0.5f;
-				//tab.VAlign = 0.5f;
-				//tab.Top.Set((-panelHeight / 2) - (tabSize * 0.275f), 0);
-				//tab.Left.Set((-panelWidth / 2) + (tabSize * 0.5f) + 10 + (tabSize * i), 0);
-				tab.Top.Set(tabSize / 4, 0);
+				tab.Top.Set(0, 0);
 				tab.Left.Pixels = spacing + (tabSize * i);
-				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
+				tab.panel.BackgroundColor = (tab.mod.SameAs(CurrentTab)) ? Color.ForestGreen : BackgroundColor;
 				mainPanel.Append(tab);
 				tabs.Add(tab);
 			}
@@ -198,7 +224,17 @@ namespace Munchies.UIElements {
 			if (CurrentTab == null) return;
 
 			foreach(ReportTab tab in tabs) {
-				tab.panel.BackgroundColor = (tab.mod.ModTabName == CurrentTab.ModTabName) ? Color.ForestGreen : BackgroundColor;
+				tab.panel.BackgroundColor = (tab.mod.SameAs(CurrentTab)) ? Color.ForestGreen : BackgroundColor;
+			}
+		}
+
+		private void UpdateTitleTextSize() {
+			Recalculate();
+			CalculatedStyle textDimensions = titleText.GetInnerDimensions();
+			float maxTextWidth = panelWidth - 80; // (32px from right side + 8px spacing) * 2 = 80
+			if (textDimensions.Width > maxTextWidth) {
+				float newScale = maxTextWidth / textDimensions.Width;
+				titleText.SetText(text: CurrentTab.ModTabName, textScale: newScale * 1.5f, large: false);
 			}
 		}
 
@@ -214,16 +250,22 @@ namespace Munchies.UIElements {
 			if (mod == null || CurrentTab == mod) return;
 
 			CurrentTab = mod;
-			if (Report.ConsumablesList.Count > 1) titleText.SetText(CurrentTab.ModTabName);
-			UpdateConsumablesList();
+			if (Report.ConsumablesList.Count > 1) titleText.SetText(text: CurrentTab.ModTabName, textScale: 1.5f, large: false);
+			UpdateTitleTextSize();
+
+			RedrawConsumablesList();
 			UpdateSelectedTab();
-			SoundEngine.PlaySound(SoundID.Tink);
+			CheckForCompletion();
+			//SoundEngine.PlaySound(SoundID.Tink);
 		}
 
-		internal void UpdateConsumablesList() {
+		internal void RedrawConsumablesList() {
 			reportList.Clear();
 
-			foreach (Consumable consumable in CurrentConsumables()) {
+			foreach (Consumable consumable in CurrentConsumables) {
+				// If config is false for showing multi-use consumables, jump to next loop if consumable is multi-use
+				if (!Config.instance.ShowMultiUseConsumables && consumable.IsMultiUse) continue;
+
 				ReportListItem item = new(consumable);
 				item.Width.Set(-10f, 1f);
 				item.Height.Set(50, 0);
@@ -233,12 +275,45 @@ namespace Munchies.UIElements {
 			reportList.Activate();
 		}
 
+		public void UpdateConsumablesList(Item usedItem) {
+			// This method is only called when the used item is already found in the UpdateCurrentConsumables list, so this extra forEach and Cast shouldn't have much of a performance impact
+			foreach (ReportListItem item in reportList.Cast<ReportListItem>()) {
+				if (usedItem.type == item.Consumable.ID) {
+					item.AddCheckMarkOrCount();
+					item.UpdateTextScale();
+					CheckForCompletion();
+					return;
+				}
+			}
+		}
+
 		#endregion
 
 		#region Helper methods
 
-		private List<Consumable> CurrentConsumables() {
-			return Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == CurrentTab.ModTabName).Consumables;
+		private void UpdateCurrentConsumables(string modName) {
+			if (CurrentTab == null || Report.ConsumablesList == null) return;
+
+			CurrentConsumables = Report.ConsumablesList.Find(entry => entry.Mod.ModTabName == modName).Consumables;
+		}
+
+		private void CheckForCompletion() {
+			completionStar.Remove();
+			if (completedTabs.Contains(CurrentTab)) {
+				reportPanel.Append(completionStar);
+				return;
+			}
+
+			// current tab has not been evaluated
+			foreach(Consumable consumable in CurrentConsumables) {
+				if (consumable.Available() && !consumable.HasBeenConsumed) {
+					return;
+				}
+			}
+			
+			// at this point, all consumables have been consumed. Add to completed tabs list
+			completedTabs.Add(CurrentTab);
+			reportPanel.Append(completionStar);
 		}
 
 		#endregion

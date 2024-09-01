@@ -15,6 +15,9 @@ namespace Munchies.Configuration {
 		[DefaultValue(false)]
 		public bool ResetDragCoords;
 
+		[DefaultValue(true)]
+		public bool ShowMultiUseConsumables;
+
 		//public override void OnChanged() {
 		//	DraggablePanel.AllowsDragging = AllowDragging;
 		//}

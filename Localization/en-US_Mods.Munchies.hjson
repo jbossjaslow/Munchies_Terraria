@@ -13,5 +13,35 @@ Configs: {
 			Label: Reset Drag Position
 			Tooltip: Select this to reset the position of the checklist
 		}
+
+		ShowMultiUseConsumables: {
+			Label: Show Multi-Use Consumables
+			Tooltip: Show consumables that can be used a limited number of times, such as Life Crystals
+		}
 	}
+}
+
+Common.ConcatenateNewline:
+	'''
+	{0}
+	{1}
+	'''
+
+ConsumableType: {
+	player: Saved per Player
+	world: "[c/f26fee:Saved per World]"
+}
+
+UI: {
+	Report: {
+		Consumables: Consumables
+		Completed: "{0} Completed!"
+	}
+}
+
+Difficulty: {
+	classic: Classic Mode Only
+	expert: "[c/eb9b34:Expert Mode Only]"
+	master: "[c/0000FF:Master Mode Only]"
+	mod_custom: "[c/00A5FF:{0} - {1} Mode Only]"
 }

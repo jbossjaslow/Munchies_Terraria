@@ -1,79 +1,110 @@
 ﻿using System;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Munchies.Models.Enums;
+using Munchies.Utilities;
 using ReLogic.Content;
+using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace Munchies.Models {
 	public class Consumable {
-		public string DisplayText;
-		//public string TexturePath;
+		public LocalizedText DisplayText;
+		public LocalizedText HoverText;
 		public Asset<Texture2D> Texture;
-		public (float X, float Y) AssetDimensions;
-		public string HoverText;
-		public ConsumableType? Type;
+		public ConsumableType Type;
 		public Color? CustomTextColor;
-		public Func<bool> HasBeenConsumed;
+		public Func<int> CurrentCount; // How many of the item have been consumed; for bools (aka single use consumables), this is either 0 or 1
+		public Func<int> TotalCount; // Total number of items that can be consumed; for bools, this is 1
+		public string Difficulty;
+		public Func<bool> Available;
 
+		public int ID;
 		public bool UsingMissingTexture;
+		public LocalizedText DifficultyText = LocalizedText.Empty;
 
-		public Consumable(string displayText, string texturePath, (float X, float Y) assetDimensions, string hoverText, ConsumableType type, Func<bool> hasBeenConsumed) {
-			DisplayText = displayText;
-			//TexturePath = texturePath;
-			//AssetDimensions = assetDimensions;
-			HoverText = hoverText;
+		#region Init
+		public Consumable(ModItem modItem, string categoryName, Color? CustomColor, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
+			DisplayText = modItem.DisplayName;
+			HoverText = modItem.Tooltip;
+			CurrentCount = currentCount;
+			TotalCount = totalCount;
+			SetTexture(modItem.Texture);
+			ID = modItem.Type;
+			Difficulty = difficulty;
+			Available = available ?? AlwaysTrue;
+			Type = GetModdedType(categoryName);
+			CustomTextColor = CustomColor;
+
+			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
+
+			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type));
+
+			SetDifficultyText(difficulty);
+		}
+
+		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
+			DisplayText = Lang.GetItemName(vanillaItemId);
+			HoverText = Language.GetText($"ItemTooltip.{ItemID.Search.GetName(vanillaItemId)}");
+			CurrentCount = currentCount;
+			TotalCount = totalCount;
+			SetTexture(vanillaItemId);
 			Type = type;
-			CustomTextColor = null;
-			HasBeenConsumed = hasBeenConsumed;
+			ID = vanillaItemId;
+			Difficulty = difficulty;
+			Available = available ?? AlwaysTrue;
 
-			SetTextureAndDimensions(texturePath: texturePath, assetDimensions: assetDimensions);
+			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
+
+			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type));
+
+			SetDifficultyText(difficulty);
 		}
 
-		public Consumable(string displayText, string texturePath, (float X, float Y) assetDimensions, string hoverText, Color customHoverColor, Func<bool> hasBeenConsumed) {
-			DisplayText = displayText;
-			//TexturePath = texturePath;
-			//AssetDimensions = assetDimensions;
-			HoverText = hoverText;
-			Type = null;
-			CustomTextColor = customHoverColor;
-			HasBeenConsumed = hasBeenConsumed;
+		//Helper since we have access to Difficulty enum
+		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, Difficulty difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) :
+			this(vanillaItemId, type, currentCount, totalCount, difficulty.ToString(), available, extraTooltip) { }
+		#endregion
 
-			SetTextureAndDimensions(texturePath: texturePath, assetDimensions: assetDimensions);
+		#region Public helpers
+		public bool HasBeenConsumed => CurrentCount() == TotalCount();
+		public bool IsMultiUse => TotalCount() > 1;
+		#endregion
+
+		#region Private helpers
+		private void SetDifficultyText(string difficulty) {
+			if (difficulty != Enums.Difficulty.classic.ToString()) {
+				var diff = Munchies.GetDifficulty(difficulty);
+				DifficultyText = diff != null ? EnumUtil.GetEnumText(diff.Value) : LocalizedText.Empty;
+			}
 		}
 
-		public Consumable(VanillaConsumable vc) {
-			DisplayText = vc.DisplayText;
-			//TexturePath = vc.TexturePath;
-			//AssetDimensions = vc.AssetDimensions;
-			HoverText = vc.HoverText;
-			Type = vc.Type;
-			CustomTextColor = null;
-			HasBeenConsumed = vc.HasBeenConsumed;
-
-			SetTextureAndDimensions(texturePath: vc.TexturePath, assetDimensions: vc.AssetDimensions);
-		}
-
-		private void SetTextureAndDimensions(string texturePath, (float X, float Y) assetDimensions) {
+		private void SetTexture(string texturePath) {
 			if (ModContent.HasAsset(texturePath)) {
 				Texture = ModContent.Request<Texture2D>(texturePath);
-				AssetDimensions = assetDimensions;
 				UsingMissingTexture = false;
 			} else {
-				AssetDimensions = (6, 16);
 				Texture = ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
 				UsingMissingTexture = true;
 			}
 		}
 
-		//private Asset<Texture2D> GetTexture(string path) {
-		//	try {
-		//		return ModContent.Request<Texture2D>(path);
-		//	} catch {
-		//		UsingMissingTexture = true;
-		//		//Munchies.instance.Logger.Error($"Error getting consumable texture: {e.StackTrace} {e.Message}");
-		//		return ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
-		//	}
-		//}
+		private void SetTexture(int vanillaItemId) {
+			Texture = ModContent.Request<Texture2D>($"Terraria/Images/Item_{vanillaItemId}");
+			UsingMissingTexture = false;
+		}
+
+		private static ConsumableType GetModdedType(string type) {
+			if (Enum.TryParse(type, out ConsumableType consumableType)) {
+				return consumableType;
+			} else {
+				return ConsumableType.player;
+			}
+		}
+
+		private static bool AlwaysTrue() => true;
+		#endregion
 	}
 }
