@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Munchies.Utilities;
 
 namespace Munchies.Models.Enums {
+	[LocalizeEnum]
 	public enum Difficulty {
 		classic,
 		expert,

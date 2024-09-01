@@ -1,8 +1,8 @@
-﻿namespace Munchies.Models.Enums {
+﻿using Munchies.Utilities;
+
+namespace Munchies.Models.Enums {
+	[LocalizeEnum]
 	public enum ConsumableType {
-		//multiUse,
-		//player_normal,
-		//player_expert,
 		player,
 		world
 	}
