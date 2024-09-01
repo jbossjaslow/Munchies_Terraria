@@ -166,12 +166,14 @@ If this value is false, the item text (and checkmark, if applicable) will be gre
 ---
 
 ## Code example
-```
+```cs
 public override void PostSetupContent() {
 	try {
 		if (ModLoader.TryGetMod("Munchies", out Mod munchiesMod)) {
-			AddMyMod(munchiesMod);
-			AddModConsumables(munchiesMod);
+			AddSingleModConsumable(munchiesMod);
+			AddMultiModConsumable(munchiesMod);
+			AddSingleVanillaConsumable(munchiesMod);
+			AddMultiVanillaConsumable(munchiesMod);
 		} else {
 			Logger.Error("Error: couldn't find the Munchies mod");
 		}
@@ -180,31 +182,65 @@ public override void PostSetupContent() {
 	}
 }
 
-private void AddMyMod(Mod munchiesMod) {
-	string[] args = {
-		"AddMod",
-		"<Mod name here>",
-		"<Path to tab icon>"
-	};
-	munchiesMod.Call(args);
-}
-
-private void AddModConsumables(Mod munchiesMod) {
+private void AddSingleModConsumable(Mod munchiesMod) {
 	object[] consumableArgs = {
-		"AddConsumable",
-		"<Mod name here>",
-		"<Item name here>",
-		"<Path to item icon>",
-		"<Hover text here>",
-		"<item category here>", // Options: player_normal, player_expert, world; Alternatively, can use a custom color such as Color.red (the color is not a string, do not add quotes)
-		new Func<bool>(IsMyItemEnabled),
-		"<item icon width>", // this is a string, representing pixels
-		"<item icon height>" // this is a string, representing pixels
+		"AddSingleConsumable",
+		MyMod, // reference to your Mod object
+		"1.3", // version
+		MyModItem, // type is ModItem
+		"player", // category
+		() => MyModItem.consumed, // Func<bool>
+		Color.Red, // custom text color (or null)
+		"expert", // difficulty (or null)
+		null, // extra tooltip of type LocalizedText
+		() => Main.expertMode // availability, or null if always available
 	};
 	munchiesMod.Call(consumableArgs);
+}
 
-	static bool IsMyItemEnabled() {
-		return <Code to get if the item is enabled>;
-	}
+private void AddMultiModConsumable(Mod munchiesMod) {
+	object[] consumableArgs = {
+		"AddMultiUseConsumable",
+		MyMod, // reference to your Mod object
+		"1.3", // version
+		MyModItem, // type is ModItem
+		"player", // category
+		() => MyModItem.currentCount, // Func<int>
+		() => MyModItem.totalCount, // Func<int>
+		Color.Red, // custom text color (or null)
+		"expert", // difficulty (or null)
+		null, // extra tooltip of type LocalizedText
+		() => Main.expertMode // availability, or null if always available
+	};
+	munchiesMod.Call(consumableArgs);
+}
+
+private void AddSingleVanillaConsumable(Mod munchiesMod) {
+	object[] consumableArgs = {
+		"AddVanillaConsumable",
+		"1.3", // version
+		ItemID.ArtisanLoaf, // item id
+		"player", // category
+		() => Main.LocalPlayer.ateArtisanBread, // Func<bool>
+		"classic", // difficulty (or null)
+		null, // extra tooltip of type LocalizedText
+		() => true // availability, or null if always available
+	};
+	munchiesMod.Call(consumableArgs);
+}
+
+private void AddMultiVanillaConsumable(Mod munchiesMod) {
+	object[] consumableArgs = {
+		"AddVanillaMultiUseConsumable",
+		"1.3", // version
+		ItemID.LifeCrystal, // item id
+		"player", // category
+		() => Main.LocalPlayer.ConsumedLifeCrystals, // Func<int>
+		() => 15, // Func<int>
+		"classic", // difficulty (or null)
+		null, // extra tooltip of type LocalizedText
+		() => true // availability, or null if always available
+	};
+	munchiesMod.Call(consumableArgs);
 }
 ```

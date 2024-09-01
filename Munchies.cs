@@ -37,32 +37,6 @@ namespace Munchies {
 			ToggleReportHotKey = null;
 		}
 
-		public override void PostSetupContent() {
-			object[] args = [
-						"AddVanillaConsumable",
-						"1.3",
-						549,
-						"player",
-						() => true,
-						null,
-						null,
-						null
-					];
-			Call(args);
-			object[] args2 = [
-				"AddVanillaMultiUseConsumable",
-						"1.3",
-						575,
-						"player",
-						() => 7,
-						() => 10,
-						null,
-						null,
-						null
-			];
-			Call(args2);
-		}
-
 		public override object Call(params object[] args) {
 			try {
 				if (args.Length >= 1) {
@@ -105,7 +79,7 @@ namespace Munchies {
 					CustomColor: (Color?)customColorObject,
 					currentCount: () => hasBeenConsumed().ToInt(),
 					totalCount: () => 1,
-					difficulty: difficulty,
+					difficulty: difficulty ?? "classic",
 					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
@@ -140,7 +114,7 @@ namespace Munchies {
 					CustomColor: (Color?)customColorObject,
 					currentCount: currentCount,
 					totalCount: totalCount,
-					difficulty: difficulty,
+					difficulty: difficulty ?? "classic",
 					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
@@ -156,9 +130,8 @@ namespace Munchies {
 			try {
 				object apiString = args[1];
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
-				if (apiVersion != new Version(1, 3, 0)) return false; // exit if not using verison 1.3 of this mod
 
-				int itemId = int.Parse(args[2] as string);
+				int itemId = int.Parse(args[2].ToString());
 				Func<bool> hasBeenConsumed = args[4] as Func<bool>;
 				string difficulty = args.Length >= 6 ? args[5] as string : "classic";
 				LocalizedText extraTooltip = args.Length >= 7 ? args[6] as LocalizedText : null;
@@ -169,7 +142,7 @@ namespace Munchies {
 					type: GetType(args[3] as string),
 					currentCount: () => hasBeenConsumed().ToInt(),
 					totalCount: () => 1,
-					difficulty: difficulty,
+					difficulty: difficulty ?? "classic",
 					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
@@ -185,9 +158,8 @@ namespace Munchies {
 			try {
 				object apiString = args[1];
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
-				if (apiVersion != new Version(1, 3, 0)) return false; // exit if not using verison 1.3 of this mod
 
-				int itemId = int.Parse(args[2] as string);
+				int itemId = int.Parse(args[2].ToString());
 				Func<int> currentCount = args[4] as Func<int>;
 				Func<int> totalCount = args[5] as Func<int>;
 				string difficulty = args.Length >= 7 ? args[6] as string : "classic";
@@ -199,7 +171,7 @@ namespace Munchies {
 					type: GetType(args[3] as string),
 					currentCount: currentCount,
 					totalCount: totalCount,
-					difficulty: difficulty,
+					difficulty: difficulty ?? "classic",
 					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
