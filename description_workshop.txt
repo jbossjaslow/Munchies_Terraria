@@ -22,11 +22,11 @@ If an image path is not given, or the texture cannot be loaded by the game, a de
 Devs can also write mods specifically to add mod support. I will get to other addon mods in the future, but no timeline has been established yet.
 [hr][/hr]
 [h3]Mods with Official Support[/h3][list]
-[*] Thorium [In development, planned to release before end of 2024] https://steamcommunity.com/sharedfiles/filedetails/?id=2909886416&searchtext=thorium
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2909886416]Thorium[/url] [In development, planned to release before end of 2024]
 [/list]
 
 [h3]Current addon mods:[/h3][list]
-[*] Calamity Addon - Adds support for Calamity https://steamcommunity.com/sharedfiles/filedetails/?id=3312725122
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3312725122]Calamity Addon[/url] - Adds support for Calamity
 [/list]
 
 [h2]Source Code[/h2]
@@ -34,6 +34,6 @@ The source code from this mod can be found [url=https://github.com/jbossjaslow/M
 
 If you are a modder, the README has information on how to Call into this mod to add your own items to the checklist
 
-[h4]Big shoutout to dirework420 for all their help in refactoring Munchies. I couldn't have done it without you![/h4]
+[h3]Big shoutout to direwolf420 for all their help in refactoring Munchies. I couldn't have done it without you![/h3]
 Checkout their workshop [url=https://steamcommunity.com/id/Bazinga2/myworkshopfiles/]here[/url], they've worked on some great mods!
 
