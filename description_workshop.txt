@@ -7,8 +7,6 @@ This list contains all of the permanent unlock consumable items in Vanilla.
 [list]
 [*]The white text items are those that affect each player individually. These are available in all worlds.
 
-[*]The orange text items are also player-dependent; however, they are only available on expert or master mode worlds. In regular worlds, these items are greyed out instead.
-
 [*]The pink items are only able to be consumed once per world, regardless of which character used them.
 [/list]
 
@@ -23,7 +21,11 @@ If an image path is not given, or the texture cannot be loaded by the game, a de
 
 Devs can also write mods specifically to add mod support. I will get to other addon mods in the future, but no timeline has been established yet.
 [hr][/hr]
-[h3]Current mods:[/h3][list]
+[h3]Mods with Official Support[/h3][list]
+[*] Thorium [In development] https://steamcommunity.com/sharedfiles/filedetails/?id=2909886416&searchtext=thorium
+[/list]
+
+[h3]Current addon mods:[/h3][list]
 [*] Calamity Addon - Adds support for Calamity https://steamcommunity.com/sharedfiles/filedetails/?id=3312725122
 [/list]
 
@@ -31,4 +33,7 @@ Devs can also write mods specifically to add mod support. I will get to other ad
 The source code from this mod can be found [url=https://github.com/jbossjaslow/Munchies_Terraria]here[/url], if you would like to read it or add an issue to the board.
 
 If you are a modder, the README has information on how to Call into this mod to add your own items to the checklist
+
+[h4]Big shoutout to dirework420 for all their help in refactoring Munchies. I couldn't have done it without you![/h4]
+Checkout their workshop [url=https://steamcommunity.com/id/Bazinga2/myworkshopfiles/]here[/url], they've worked on some great mods!
 
