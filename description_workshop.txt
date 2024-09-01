@@ -35,5 +35,5 @@ The source code from this mod can be found [url=https://github.com/jbossjaslow/M
 If you are a modder, the README has information on how to Call into this mod to add your own items to the checklist
 
 [h3]Big shoutout to direwolf420 for all their help in refactoring Munchies. I couldn't have done it without you![/h3]
-Checkout their workshop [url=https://steamcommunity.com/id/Bazinga2/myworkshopfiles/]here[/url], they've worked on some great mods!
+Checkout their workshop [url=https://steamcommunity.com/workshop/filedetails/?id=2897304525]here[/url], they've worked on some great mods!
 
