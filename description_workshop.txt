@@ -22,7 +22,7 @@ If an image path is not given, or the texture cannot be loaded by the game, a de
 Devs can also write mods specifically to add mod support. I will get to other addon mods in the future, but no timeline has been established yet.
 [hr][/hr]
 [h3]Mods with Official Support[/h3][list]
-[*] Thorium [In development] https://steamcommunity.com/sharedfiles/filedetails/?id=2909886416&searchtext=thorium
+[*] Thorium [In development, planned to release before end of 2024] https://steamcommunity.com/sharedfiles/filedetails/?id=2909886416&searchtext=thorium
 [/list]
 
 [h3]Current addon mods:[/h3][list]
