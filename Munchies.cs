@@ -3,6 +3,7 @@ using Munchies.Models.Enums;
 using Munchies.Utilities;
 using System;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -42,6 +43,7 @@ namespace Munchies {
 						"AddSingleConsumable" => HandleAddSingleConsumable(args),
 						"AddMultiUseConsumable" => HandleAddMultiConsumable(args),
 						"AddVanillaConsumable" => HandleAddVanillaConsumable(args),
+						"AddVanillaMultiUseConsumable" => HandleAddVanillaMultiConsumable(args),
 						// can add more types of calls here in the future
 						_ => false
 					};
@@ -57,7 +59,6 @@ namespace Munchies {
 		private bool HandleAddSingleConsumable(params object[] args) {
 			Mod mod = null;
 			try {
-				Consumable consumable;
 				mod = args[1] as Mod;
 				ConsumableMod externalMod = new(mod);
 
@@ -69,7 +70,7 @@ namespace Munchies {
 				LocalizedText extraTooltip = args.Length >= 8 ? args[7] as LocalizedText : null;
 				Func<bool> isAvailable = args.Length >= 9 ? args[8] as Func<bool> : null;
 
-				consumable = new(
+				Consumable consumable = new(
 					modItem: item,
 					CategoryOrCustomColor: args[4],
 					currentCount: () => hasBeenConsumed().ToInt(),
@@ -89,7 +90,6 @@ namespace Munchies {
 		private bool HandleAddMultiConsumable(params object[] args) {
 			Mod mod = null;
 			try {
-				Consumable consumable;
 				mod = args[1] as Mod;
 				ConsumableMod externalMod = new(mod);
 
@@ -102,7 +102,7 @@ namespace Munchies {
 				LocalizedText extraTooltip = args.Length >= 9 ? args[8] as LocalizedText : null;
 				Func<bool> isAvailable = args.Length >= 10 ? args[9] as Func<bool> : null;
 
-				consumable = new(
+				Consumable consumable = new(
 					modItem: item,
 					CategoryOrCustomColor: args[4],
 					currentCount: currentCount,
@@ -120,6 +120,35 @@ namespace Munchies {
 		}
 
 		private bool HandleAddVanillaConsumable(params object[] args) {
+			try {
+				object apiString = args[1];
+				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
+				if (apiVersion != new Version(1, 3, 0)) return false; // exit if not using verison 1.3 of this mod
+
+				int itemId = int.Parse(args[2] as string);
+				Func<bool> hasBeenConsumed = args[4] as Func<bool>;
+				string difficulty = args.Length >= 6 ? args[5] as string : "classic";
+				LocalizedText extraTooltip = args.Length >= 7 ? args[6] as LocalizedText : null;
+				Func<bool> isAvailable = args.Length >= 8 ? args[7] as Func<bool> : null;
+
+				Consumable consumable = new(
+					vanillaItemId: itemId,
+					type: GetType(args[3] as string),
+					currentCount: () => hasBeenConsumed().ToInt(),
+					totalCount: () => 1,
+					difficulty: difficulty,
+					available: isAvailable,
+					extraTooltip: extraTooltip
+				);
+
+				return Report.AddConsumableToList(mod: Report.VanillaConsumableMod, consumable: consumable);
+			} catch {
+				Logger.Error($"Error adding vanilla consumable, see log for details");
+				return false;
+			}
+		}
+
+		private bool HandleAddVanillaMultiConsumable(params object[] args) {
 			try {
 				object apiString = args[1];
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
@@ -144,7 +173,7 @@ namespace Munchies {
 
 				return Report.AddConsumableToList(mod: Report.VanillaConsumableMod, consumable: consumable);
 			} catch {
-				Logger.Error($"Error adding vanilla consumable, see log for details");
+				Logger.Error($"Error adding vanilla multi-use consumable, see log for details");
 				return false;
 			}
 		}
