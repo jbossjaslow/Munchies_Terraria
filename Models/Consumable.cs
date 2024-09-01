@@ -34,7 +34,7 @@ namespace Munchies.Models {
 			SetTexture(modItem.Texture);
 			ID = modItem.Type;
 			Difficulty = difficulty;
-			Available = available;
+			Available = available ?? AlwaysTrue;
 
 			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
 
@@ -55,7 +55,7 @@ namespace Munchies.Models {
 			Type = type;
 			ID = vanillaItemId;
 			Difficulty = difficulty;
-			Available = available;
+			Available = available ?? AlwaysTrue;
 
 			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
 
@@ -104,6 +104,8 @@ namespace Munchies.Models {
 				return ConsumableType.player;
 			}
 		}
+
+		private static bool AlwaysTrue() => true;
 		#endregion
 	}
 }
