@@ -29,7 +29,7 @@ The color you would like your item text to display with, if desired. If you pass
 #### 7: `string` Difficulty
 Which difficulty this item is locked behind, e.g. expert only.
 
-Acceptable strings: "classic", "expert", "master"
+Acceptable strings: "classic", "expert", "master" -- "expert" and "master" add a colored tooltip and difficulty icon, but do not affect availability on their own
 
 Alternatively, you can pass in your own difficulty string if you'd like to use your mod's custom difficulty, e.g. Calamity's Revengeance mode
 
@@ -74,7 +74,7 @@ The color you would like your item text to display with, if desired. If you pass
 #### 8: `string` Difficulty
 Which difficulty this item is locked behind, e.g. expert only.
 
-Acceptable strings: "classic", "expert", "master"
+Acceptable strings: "classic", "expert", "master" -- "expert" and "master" add a colored tooltip and difficulty icon, but do not affect availability on their own
 
 Alternatively, you can pass in your own difficulty string if you'd like to use your mod's custom difficulty, e.g. Calamity's Revengeance mode
 
@@ -110,7 +110,7 @@ Whether the item has been consumed or not. This will be triggered to know whethe
 #### 5: `string` Difficulty
 Which difficulty this item is locked behind, e.g. expert only.
 
-Acceptable strings: "classic", "expert", "master"
+Acceptable strings: "classic", "expert", "master" -- "expert" and "master" add a colored tooltip and difficulty icon, but do not affect availability on their own
 
 Alternatively, you can pass in your own difficulty string if you'd like to use your mod's custom difficulty, e.g. Calamity's Revengeance mode
 
@@ -149,7 +149,7 @@ The total number of uses this item has
 #### 6: `string` Difficulty
 Which difficulty this item is locked behind, e.g. expert only.
 
-Acceptable strings: "classic", "expert", "master"
+Acceptable strings: "classic", "expert", "master" -- "expert" and "master" add a colored tooltip and difficulty icon, but do not affect availability on their own
 
 Alternatively, you can pass in your own difficulty string if you'd like to use your mod's custom difficulty, e.g. Calamity's Revengeance mode
 
@@ -187,11 +187,11 @@ private void AddSingleModConsumable(Mod munchiesMod) {
 		"AddSingleConsumable",
 		MyMod, // reference to your Mod object
 		"1.3", // version
-		MyModItem, // type is ModItem
+		ModContent.GetInstance<MyModItem>(), // type is ModItem
 		"player", // category
-		() => MyModItem.consumed, // Func<bool>
+		() => consumed, // Func<bool>
 		Color.Red, // custom text color (or null)
-		"expert", // difficulty (or null)
+		"expert", // difficulty (or null) - this changes the tooltip text and adds a difficulty icon to show that this item is only available in expert mode. Does not affect availablility, this still needs to be set on its own
 		null, // extra tooltip of type LocalizedText
 		() => Main.expertMode // availability, or null if always available
 	};
@@ -203,12 +203,12 @@ private void AddMultiModConsumable(Mod munchiesMod) {
 		"AddMultiUseConsumable",
 		MyMod, // reference to your Mod object
 		"1.3", // version
-		MyModItem, // type is ModItem
+		ModContent.GetInstance<MyModItem>(), // type is ModItem
 		"player", // category
 		() => MyModItem.currentCount, // Func<int>
 		() => MyModItem.totalCount, // Func<int>
 		Color.Red, // custom text color (or null)
-		"expert", // difficulty (or null)
+		"expert", // difficulty (or null) - this changes the tooltip text and adds a difficulty icon to show that this item is only available in expert mode. Does not affect availablility, this still needs to be set on its own
 		null, // extra tooltip of type LocalizedText
 		() => Main.expertMode // availability, or null if always available
 	};

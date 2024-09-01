@@ -69,7 +69,7 @@ namespace Munchies {
 				string categoryName = args[4] as string;
 				Func<bool> hasBeenConsumed = args[5] as Func<bool>;
 				object customColorObject = args.Length >= 7 ? args[6] : null;
-				string difficulty = args.Length >= 8 ? args[7] as string : "classic";
+				string difficulty = args.Length >= 8 ? args[7] as string : Difficulty.classic.ToString();
 				LocalizedText extraTooltip = args.Length >= 9 ? args[8] as LocalizedText : null;
 				Func<bool> isAvailable = args.Length >= 10 ? args[9] as Func<bool> : null;
 
@@ -79,7 +79,7 @@ namespace Munchies {
 					CustomColor: (Color?)customColorObject,
 					currentCount: () => hasBeenConsumed().ToInt(),
 					totalCount: () => 1,
-					difficulty: difficulty ?? "classic",
+					difficulty: difficulty ?? Difficulty.classic.ToString(),
 					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
@@ -104,7 +104,7 @@ namespace Munchies {
 				Func<int> currentCount = args[5] as Func<int>;
 				Func<int> totalCount = args[6] as Func<int>;
 				object customColorObject = args.Length >= 8 ? args[7] : null;
-				string difficulty = args.Length >= 9 ? args[8] as string : "classic";
+				string difficulty = args.Length >= 9 ? args[8] as string : Difficulty.classic.ToString();
 				LocalizedText extraTooltip = args.Length >= 10 ? args[9] as LocalizedText : null;
 				Func<bool> isAvailable = args.Length >= 11 ? args[10] as Func<bool> : null;
 
@@ -114,7 +114,7 @@ namespace Munchies {
 					CustomColor: (Color?)customColorObject,
 					currentCount: currentCount,
 					totalCount: totalCount,
-					difficulty: difficulty ?? "classic",
+					difficulty: difficulty ?? Difficulty.classic.ToString(),
 					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
@@ -133,7 +133,7 @@ namespace Munchies {
 
 				int itemId = int.Parse(args[2].ToString());
 				Func<bool> hasBeenConsumed = args[4] as Func<bool>;
-				string difficulty = args.Length >= 6 ? args[5] as string : "classic";
+				string difficulty = args.Length >= 6 ? args[5] as string : Difficulty.classic.ToString();
 				LocalizedText extraTooltip = args.Length >= 7 ? args[6] as LocalizedText : null;
 				Func<bool> isAvailable = args.Length >= 8 ? args[7] as Func<bool> : null;
 
@@ -142,7 +142,7 @@ namespace Munchies {
 					type: GetType(args[3] as string),
 					currentCount: () => hasBeenConsumed().ToInt(),
 					totalCount: () => 1,
-					difficulty: difficulty ?? "classic",
+					difficulty: difficulty ?? Difficulty.classic.ToString(),
 					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
@@ -162,7 +162,7 @@ namespace Munchies {
 				int itemId = int.Parse(args[2].ToString());
 				Func<int> currentCount = args[4] as Func<int>;
 				Func<int> totalCount = args[5] as Func<int>;
-				string difficulty = args.Length >= 7 ? args[6] as string : "classic";
+				string difficulty = args.Length >= 7 ? args[6] as string : Difficulty.classic.ToString();
 				LocalizedText extraTooltip = args.Length >= 8 ? args[7] as LocalizedText : null;
 				Func<bool> isAvailable = args.Length >= 9 ? args[8] as Func<bool> : null;
 
@@ -171,7 +171,7 @@ namespace Munchies {
 					type: GetType(args[3] as string),
 					currentCount: currentCount,
 					totalCount: totalCount,
-					difficulty: difficulty ?? "classic",
+					difficulty: difficulty ?? Difficulty.classic.ToString(),
 					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
