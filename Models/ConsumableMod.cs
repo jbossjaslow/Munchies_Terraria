@@ -42,5 +42,7 @@ namespace Munchies.Models {
 				return ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
 			}
 		}
+
+		public bool SameAs(ConsumableMod other) => mod == other.mod;
 	}
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models.Enums;
+using Munchies.Utilities;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
@@ -22,6 +23,7 @@ namespace Munchies.Models {
 
 		public int ID;
 		public bool UsingMissingTexture;
+		public LocalizedText DifficultyText = LocalizedText.Empty;
 
 		#region Init
 		public Consumable(ModItem modItem, object CategoryOrCustomColor, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
@@ -32,12 +34,16 @@ namespace Munchies.Models {
 			SetTexture(modItem.Texture);
 			ID = modItem.Type;
 			Difficulty = difficulty;
-			Available = available;
+			Available = available ?? AlwaysTrue;
 
-			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip); 
+			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
 
 			if (CategoryOrCustomColor is Color color) CustomTextColor = color;
 			else if (CategoryOrCustomColor is string categoryName) Type = GetModdedType(categoryName);
+
+			if (Type != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type.Value));
+
+			SetDifficultyText(difficulty);
 		}
 
 		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
@@ -49,10 +55,18 @@ namespace Munchies.Models {
 			Type = type;
 			ID = vanillaItemId;
 			Difficulty = difficulty;
-			Available = available;
+			Available = available ?? AlwaysTrue;
 
 			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
+
+			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type.Value));
+
+			SetDifficultyText(difficulty);
 		}
+
+		//Helper since we have access to Difficulty enum
+		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, Difficulty difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) :
+			this(vanillaItemId, type, currentCount, totalCount, difficulty.ToString(), available, extraTooltip) { }
 		#endregion
 
 		#region Public helpers
@@ -61,6 +75,13 @@ namespace Munchies.Models {
 		#endregion
 
 		#region Private helpers
+		private void SetDifficultyText(string difficulty) {
+			if (difficulty != Enums.Difficulty.classic.ToString()) {
+				var diff = Munchies.GetDifficulty(difficulty);
+				DifficultyText = diff != null ? EnumUtil.GetEnumText(diff.Value) : LocalizedText.Empty;
+			}
+		}
+
 		private void SetTexture(string texturePath) {
 			if (ModContent.HasAsset(texturePath)) {
 				Texture = ModContent.Request<Texture2D>(texturePath);
@@ -83,6 +104,8 @@ namespace Munchies.Models {
 				return ConsumableType.player;
 			}
 		}
+
+		private static bool AlwaysTrue() => true;
 		#endregion
 	}
 }

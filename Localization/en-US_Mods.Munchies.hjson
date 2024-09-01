@@ -27,15 +27,9 @@ Common.ConcatenateNewline:
 	{1}
 	'''
 
-ConsumableTypes: {
-	Player.Tooltip: Saved per Player
-	World.Tooltip: "[c/f26fee:Saved per World]"
-}
-
-Difficulties: {
-	Expert.Tooltip: "[c/eb9b34:Expert Mode Only]"
-	Master.Tooltip: "[c/0000FF:Master Mode Only]"
-	CustomMod.Tooltip: "[c/00A5FF:{0} - {1} Mode Only]"
+ConsumableType: {
+	player: Saved per Player
+	world: "[c/f26fee:Saved per World]"
 }
 
 UI: {
@@ -43,4 +37,11 @@ UI: {
 		Consumables: Consumables
 		Completed: "{0} Completed!"
 	}
+}
+
+Difficulty: {
+	classic: Classic Mode Only
+	expert: "[c/eb9b34:Expert Mode Only]"
+	master: "[c/0000FF:Master Mode Only]"
+	mod_custom: "[c/00A5FF:{0} - {1} Mode Only]"
 }

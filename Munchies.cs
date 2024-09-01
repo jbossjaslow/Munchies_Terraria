@@ -1,8 +1,8 @@
 using Munchies.Models;
 using Munchies.Models.Enums;
+using Munchies.Utilities;
 using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -13,7 +13,6 @@ namespace Munchies {
 		internal static Munchies instance;
 		internal static Report report;
 		internal static LocalizedText ConcatenateNewline;
-		internal static LocalizedText ModDifficultyText;
 
 		internal static ModKeybind ToggleReportHotKey;
 
@@ -23,8 +22,8 @@ namespace Munchies {
 		public override void Load() {
 			instance = this;
 
+			EnumUtil.LoadEnumText(this);
 			ConcatenateNewline = this.GetLocalization("Common.ConcatenateNewline");
-			ModDifficultyText = this.GetLocalization("Difficulties.CustomMod.Tooltip");
 			ToggleReportHotKey = KeybindLoader.RegisterKeybind(this, "ToggleReport", "K");
 
 			report ??= new(); // initialize the report if it is null
@@ -150,7 +149,7 @@ namespace Munchies {
 			}
 		}
 
-		private static ConsumableType GetType(string type) {
+		internal static ConsumableType GetType(string type) {
 			if (Enum.TryParse(type, out ConsumableType consumableType)) {
 				return consumableType;
 			} else {
@@ -158,7 +157,7 @@ namespace Munchies {
 			}
 		}
 
-		private static Difficulty? GetDifficulty(string diff) {
+		internal static Difficulty? GetDifficulty(string diff) {
 			if (diff == "") return null;
 
 			if (Enum.TryParse(diff, out Difficulty difficulty)) {

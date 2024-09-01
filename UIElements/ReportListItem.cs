@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Munchies.Localization;
 using Munchies.Models;
 using Munchies.Models.Enums;
 using ReLogic.Content;
@@ -59,12 +58,12 @@ namespace Munchies.UIElements {
 			text.SetPadding(0);
 			panel.Append(text);
 
-			if (Consumable.Difficulty != "classic") AddDifficultyIcon();
+			if (Consumable.Difficulty != Difficulty.classic.ToString()) AddDifficultyIcon();
 
 			AddCheckMarkOrCount();
 			UpdateTextScale();
 
-			difficultyText = DifficultyText;
+			difficultyText = Consumable.DifficultyText;
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
@@ -72,10 +71,9 @@ namespace Munchies.UIElements {
 			if ((itemImage?.IsMouseHovering ?? false) && Consumable.UsingMissingTexture) {
 				UICommon.TooltipMouseText(text: "Missing Texture");
 			} else if (difficultyIcon != null && difficultyIcon.IsMouseHovering) {
-				UICommon.TooltipMouseText(text: difficultyText.Value);
+				UICommon.TooltipMouseText(text: GetDifficultyText());
 			} else if (panel?.IsMouseHovering ?? false) {
-				// Since this is added in DrawSelf, using .Value will grab current language without needing to reload mod
-				UICommon.TooltipMouseText(text: Consumable.HoverText.Value); // Adds box behind hover text
+				UICommon.TooltipMouseText(text: GetHoverText()); // Adds box behind hover text
 			}
 		}
 
@@ -165,19 +163,39 @@ namespace Munchies.UIElements {
 			};
 		}
 
-		private Asset<Texture2D> DifficultyTexture => Consumable.Difficulty switch {
-			//"classic" => ReportUI.classicDifficultyTexture,
-			"expert" => ReportUI.expertDifficultyTexture,
-			"master" => ReportUI.masterDifficultyTexture,
-			_ => ReportUI.customModDifficultyTexture
-		};
+		private string GetHoverText() {
+			string hoverText = Consumable.HoverText.Value;
+			if (difficultyText != LocalizedText.Empty) {
+				string difficultyText = GetDifficultyText();
+				hoverText = Munchies.ConcatenateNewline.Format(Consumable.HoverText, difficultyText);
+			}
 
-		private LocalizedText DifficultyText => Consumable.Difficulty switch {
-			//"classic" => Munchies.instance.GetLocalization(MunchiesLocKey.ExpertDifficultyTooltip),
-			"expert" => Munchies.instance.GetLocalization(MunchiesLocKey.ExpertDifficultyTooltip),
-			"master" => Munchies.instance.GetLocalization(MunchiesLocKey.MasterDifficultyTooltip),
-			_ => Munchies.ModDifficultyText.WithFormatArgs(ReportUISystem.Instance.ReportUI.CurrentTab.ModTabName, Consumable.Difficulty)
-		};
+			return hoverText;
+		}
+
+		private string GetDifficultyText() {
+			string difficultyTextFormat = difficultyText.Value;
+			var diff = Munchies.GetDifficulty(Consumable.Difficulty);
+			if (diff == Difficulty.mod_custom) {
+				difficultyTextFormat = difficultyText.Format(ReportUISystem.Instance.ReportUI.CurrentTab.ModTabName, Consumable.Difficulty);
+			}
+
+			return difficultyTextFormat;
+		}
+
+		private Asset<Texture2D> DifficultyTexture {
+			get {
+				var diffString = Consumable.Difficulty;
+				if (diffString != Difficulty.classic.ToString()) {
+					var diff = Munchies.GetDifficulty(diffString);
+					if (diff != null) {
+						if (diff == Difficulty.expert) return ReportUI.expertDifficultyTexture;
+						if (diff == Difficulty.master) return ReportUI.masterDifficultyTexture;
+					}
+				}
+				return ReportUI.customModDifficultyTexture;
+			}
+		}
 		#endregion
 	}
 }
