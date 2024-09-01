@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Munchies.Models.Enums;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
@@ -16,18 +17,22 @@ namespace Munchies.Models {
 		public Color? CustomTextColor;
 		public Func<int> CurrentCount; // How many of the item have been consumed; for bools (aka single use consumables), this is either 0 or 1
 		public Func<int> TotalCount; // Total number of items that can be consumed; for bools, this is 1
+		public string Difficulty;
+		public Func<bool> Available;
 
 		public int ID;
 		public bool UsingMissingTexture;
 
 		#region Init
-		public Consumable(ModItem modItem, object CategoryOrCustomColor, Func<int> currentCount, Func<int> totalCount, LocalizedText extraTooltip) {
+		public Consumable(ModItem modItem, object CategoryOrCustomColor, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
 			DisplayText = modItem.DisplayName;
 			HoverText = modItem.Tooltip;
 			CurrentCount = currentCount;
 			TotalCount = totalCount;
 			SetTexture(modItem.Texture);
 			ID = modItem.Type;
+			Difficulty = difficulty;
+			Available = available;
 
 			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip); 
 
@@ -35,7 +40,7 @@ namespace Munchies.Models {
 			else if (CategoryOrCustomColor is string categoryName) Type = GetModdedType(categoryName);
 		}
 
-		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, LocalizedText extraTooltip) {
+		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
 			DisplayText = Lang.GetItemName(vanillaItemId);
 			HoverText = Language.GetText($"ItemTooltip.{ItemID.Search.GetName(vanillaItemId)}");
 			CurrentCount = currentCount;
@@ -43,6 +48,8 @@ namespace Munchies.Models {
 			SetTexture(vanillaItemId);
 			Type = type;
 			ID = vanillaItemId;
+			Difficulty = difficulty;
+			Available = available;
 
 			if (extraTooltip != null) HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, extraTooltip);
 		}
@@ -73,7 +80,7 @@ namespace Munchies.Models {
 			if (Enum.TryParse(type, out ConsumableType consumableType)) {
 				return consumableType;
 			} else {
-				return ConsumableType.player_normal;
+				return ConsumableType.player;
 			}
 		}
 		#endregion

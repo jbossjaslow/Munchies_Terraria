@@ -11,6 +11,12 @@
 	  <None Remove="description_workshop.txt" />
 	  <None Remove="UIElements\xMark.png" />
 	</ItemGroup>
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Users\JBOSS\Documents\My Games\Terraria\tModLoader\ModSources\Munchies\.editorconfig" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="C:\Users\JBOSS\Documents\My Games\Terraria\tModLoader\ModSources\Munchies\.editorconfig" />
+	</ItemGroup>
 
 	<!-- References -->
 

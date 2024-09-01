@@ -19,6 +19,7 @@ namespace Munchies.Hooks {
         public override void OnEnterWorld() {
             //base.OnEnterWorld();
             ReportUI.SetVisible(false);
+			ReportUISystem.Instance.ReportUI.HasBeenInitialized = false;
 			ReportUISystem.Instance.ReportUI.completedTabs.Clear();
 		}
     }

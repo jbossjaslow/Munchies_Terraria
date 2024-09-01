@@ -1,3 +1,5 @@
+using Munchies.Localization;
+using Munchies.Models.Enums;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -8,6 +10,7 @@ namespace Munchies.Models {
 		public static ConsumableMod VanillaConsumableMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
 		public static List<ConsumablesEntry> ConsumablesList = [];
 		private LocalizedText ExpertExtraTooltip;
+		private LocalizedText PlayerExtraTooltip;
 		private LocalizedText WorldExtraTooltip;
 
 		private static readonly int[] VanillaItems = [
@@ -37,33 +40,37 @@ namespace Munchies.Models {
 		];
 
 		public Report() {
-			ExpertExtraTooltip = Munchies.instance.GetLocalization("ConsumableTypes.player_expert.Tooltip");
-			WorldExtraTooltip = Munchies.instance.GetLocalization("ConsumableTypes.world.Tooltip");
+			ExpertExtraTooltip = Munchies.instance.GetLocalization(MunchiesLocKey.ExpertDifficultyTooltip);
+
+			PlayerExtraTooltip = Munchies.instance.GetLocalization(MunchiesLocKey.PlayerTypeTooltip);
+			WorldExtraTooltip = Munchies.instance.GetLocalization(MunchiesLocKey.WorldTypeTooltip);
+
+			LocalizedText PlayerAndExpertTooltip = Munchies.ConcatenateNewline.WithFormatArgs(PlayerExtraTooltip, ExpertExtraTooltip);
 
 			List<Consumable> vanillaConsumables = [
-
-				new(vanillaItemId: ItemID.LifeCrystal, type: ConsumableType.multiUse, currentCount: () => Main.LocalPlayer.ConsumedLifeCrystals, totalCount: () => 15, extraTooltip: null),
-				new(vanillaItemId: ItemID.LifeFruit, type: ConsumableType.multiUse, currentCount: () => Main.LocalPlayer.ConsumedLifeFruit, totalCount: () => 20, extraTooltip: null), 
-				new(vanillaItemId: ItemID.ManaCrystal, type: ConsumableType.multiUse, currentCount: () => Main.LocalPlayer.ConsumedManaCrystals, totalCount: () => 9, extraTooltip: null), 
+				// multi
+				new(vanillaItemId: ItemID.LifeCrystal, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.ConsumedLifeCrystals, totalCount: () => 15, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip),
+				new(vanillaItemId: ItemID.LifeFruit, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.ConsumedLifeFruit, totalCount: () => 20, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
+				new(vanillaItemId: ItemID.ManaCrystal, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.ConsumedManaCrystals, totalCount: () => 9, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
 
 				// normal
-				new(vanillaItemId: ItemID.ArtisanLoaf, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.ateArtisanBread.ToInt(), totalCount: () => 1, extraTooltip: null), 
-				new(vanillaItemId: ItemID.TorchGodsFavor, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.unlockedBiomeTorches.ToInt(), totalCount: () => 1, extraTooltip: null), 
-				new(vanillaItemId: ItemID.AegisCrystal, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedAegisCrystal.ToInt(), totalCount: () => 1, extraTooltip: null), 
-				new(vanillaItemId: ItemID.AegisFruit, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedAegisFruit.ToInt(), totalCount: () => 1, extraTooltip: null), 
-				new(vanillaItemId: ItemID.ArcaneCrystal, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedArcaneCrystal.ToInt(), totalCount: () => 1, extraTooltip: null), 
-				new(vanillaItemId: ItemID.Ambrosia, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedAmbrosia.ToInt(), totalCount: () => 1, extraTooltip: null), 
-				new(vanillaItemId: ItemID.GummyWorm, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedGummyWorm.ToInt(), totalCount: () => 1, extraTooltip: null), 
-				new(vanillaItemId: ItemID.GalaxyPearl, type: ConsumableType.player_normal, currentCount: () => Main.LocalPlayer.usedGalaxyPearl.ToInt(), totalCount: () => 1, extraTooltip: null), 
+				new(vanillaItemId: ItemID.ArtisanLoaf, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.ateArtisanBread.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
+				new(vanillaItemId: ItemID.TorchGodsFavor, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.unlockedBiomeTorches.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
+				new(vanillaItemId: ItemID.AegisCrystal, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.usedAegisCrystal.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
+				new(vanillaItemId: ItemID.AegisFruit, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.usedAegisFruit.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
+				new(vanillaItemId: ItemID.ArcaneCrystal, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.usedArcaneCrystal.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
+				new(vanillaItemId: ItemID.Ambrosia, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.usedAmbrosia.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
+				new(vanillaItemId: ItemID.GummyWorm, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.usedGummyWorm.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
+				new(vanillaItemId: ItemID.GalaxyPearl, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.usedGalaxyPearl.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: PlayerExtraTooltip), 
 
 				// expert
-				new(vanillaItemId: ItemID.DemonHeart, type: ConsumableType.player_expert, currentCount: () => Main.LocalPlayer.CanDemonHeartAccessoryBeShown().ToInt(), totalCount: () => 1, extraTooltip: ExpertExtraTooltip), 
-				new(vanillaItemId: ItemID.MinecartPowerup, type: ConsumableType.player_expert, currentCount: () => Main.LocalPlayer.unlockedSuperCart.ToInt(), totalCount: () => 1, extraTooltip: ExpertExtraTooltip), 
+				new(vanillaItemId: ItemID.DemonHeart, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.extraAccessory.ToInt(), totalCount: () => 1, difficulty: "expert", available: () => Main.expertMode, extraTooltip: PlayerAndExpertTooltip), 
+				new(vanillaItemId: ItemID.MinecartPowerup, type: ConsumableType.player, currentCount: () => Main.LocalPlayer.unlockedSuperCart.ToInt(), totalCount: () => 1, difficulty: "expert", available: () => Main.expertMode, extraTooltip: PlayerAndExpertTooltip),
 
 				// world
-				new(vanillaItemId: ItemID.CombatBook, type: ConsumableType.world, currentCount: () => NPC.combatBookWasUsed.ToInt(), totalCount: () => 1, extraTooltip: WorldExtraTooltip), 
-				new(vanillaItemId: ItemID.CombatBookVolumeTwo, type: ConsumableType.world, currentCount: () => NPC.combatBookVolumeTwoWasUsed.ToInt(), totalCount: () => 1, extraTooltip: WorldExtraTooltip), 
-				new(vanillaItemId: ItemID.PeddlersSatchel, type: ConsumableType.world, currentCount: () => NPC.peddlersSatchelWasUsed.ToInt(), totalCount: () => 1, extraTooltip: WorldExtraTooltip), 
+				new(vanillaItemId: ItemID.CombatBook, type: ConsumableType.world, currentCount: () => NPC.combatBookWasUsed.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: WorldExtraTooltip), 
+				new(vanillaItemId: ItemID.CombatBookVolumeTwo, type: ConsumableType.world, currentCount: () => NPC.combatBookVolumeTwoWasUsed.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: WorldExtraTooltip), 
+				new(vanillaItemId: ItemID.PeddlersSatchel, type: ConsumableType.world, currentCount: () => NPC.peddlersSatchelWasUsed.ToInt(), totalCount: () => 1, difficulty: "classic", available: () => true, extraTooltip: WorldExtraTooltip), 
 			];
 			ConsumablesList.Add(new(VanillaConsumableMod, vanillaConsumables));
 		}

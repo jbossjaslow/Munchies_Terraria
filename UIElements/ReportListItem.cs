@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Munchies.Localization;
 using Munchies.Models;
+using Munchies.Models.Enums;
 using ReLogic.Content;
-using System;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ModLoader;
+using Terraria.Localization;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 
@@ -25,6 +26,9 @@ namespace Munchies.UIElements {
 		UIImage itemImage;
 		UIText ratioText;
 		UIImage checkMarkImage;
+		UIImage difficultyIcon;
+
+		LocalizedText difficultyText;
 
 		public override void OnInitialize() {
 			panel = new() {
@@ -43,7 +47,7 @@ namespace Munchies.UIElements {
 			panel.Append(itemImage);
 
 			text = new(text: Consumable.DisplayText) {
-				TextColor = Consumable.CustomTextColor ?? DisplayTextColor,
+				TextColor = GetDisplayTextColor(),
 				ShadowColor = Color.Black,
 				IsWrapped = false,
 				WrappedTextBottomPadding = 0f,
@@ -55,14 +59,20 @@ namespace Munchies.UIElements {
 			text.SetPadding(0);
 			panel.Append(text);
 
+			if (Consumable.Difficulty != "classic") AddDifficultyIcon();
+
 			AddCheckMarkOrCount();
 			UpdateTextScale();
+
+			difficultyText = DifficultyText;
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			base.DrawSelf(spriteBatch);
 			if ((itemImage?.IsMouseHovering ?? false) && Consumable.UsingMissingTexture) {
 				UICommon.TooltipMouseText(text: "Missing Texture");
+			} else if (difficultyIcon != null && difficultyIcon.IsMouseHovering) {
+				UICommon.TooltipMouseText(text: difficultyText.Value);
 			} else if (panel?.IsMouseHovering ?? false) {
 				// Since this is added in DrawSelf, using .Value will grab current language without needing to reload mod
 				UICommon.TooltipMouseText(text: Consumable.HoverText.Value); // Adds box behind hover text
@@ -82,7 +92,7 @@ namespace Munchies.UIElements {
 				checkMarkImage.Height.Set(CheckMarkTexture.Height(), 0f);
 				checkMarkImage.SetPadding(0);
 				checkMarkImage.VAlign = 0.5f;
-				checkMarkImage.Color = Color.SpringGreen;
+				checkMarkImage.Color = Consumable.Available() ? Color.SpringGreen : Color.Gray;
 
 				panel.Append(checkMarkImage);
 				CheckMarkOrRatioTextWidth = CheckMarkTexture.Width();
@@ -126,15 +136,47 @@ namespace Munchies.UIElements {
 				text.SetText(text: Consumable.DisplayText, textScale: newScale, large: false);
 			}
 		}
+
+		public void AddDifficultyIcon() {
+			Asset<Texture2D> texture = DifficultyTexture;
+			float scaleFactor = 0.66f;
+			difficultyIcon = new(texture) {
+				ScaleToFit = true
+			};
+			difficultyIcon.Width.Set(texture.Width() * scaleFactor, 0);
+			difficultyIcon.Height.Set(texture.Height() * scaleFactor, 0);
+			difficultyIcon.Top.Set(-texture.Height() * scaleFactor, 1);
+			difficultyIcon.Left.Set(-texture.Width() * scaleFactor, 1);
+			difficultyIcon.SetPadding(0);
+			panel.Append(difficultyIcon);
+		}
 		#endregion
 
 		#region Private helpers
-		private Color DisplayTextColor => Consumable.Type switch {
-			ConsumableType.multiUse => Color.SkyBlue,
-			ConsumableType.player_normal => Color.White,
-			ConsumableType.player_expert => Main.expertMode ? Color.Orange : Color.Gray,
-			ConsumableType.world => new Color(r: 242, g: 111, b: 238),
-			_ => throw new System.NotImplementedException(),
+		private Color GetDisplayTextColor() {
+			if (!Consumable.Available()) return Color.Gray;
+			else if (Consumable.CustomTextColor != null) return (Color)Consumable.CustomTextColor;
+			else return Consumable.Type switch {
+				//ConsumableType.multiUse => Color.SkyBlue,
+				ConsumableType.player => Color.White,
+				//ConsumableType.player_expert => Main.expertMode ? Color.Orange : Color.Gray,
+				ConsumableType.world => new Color(r: 242, g: 111, b: 238),
+				_ => throw new System.NotImplementedException(),
+			};
+		}
+
+		private Asset<Texture2D> DifficultyTexture => Consumable.Difficulty switch {
+			//"classic" => ReportUI.classicDifficultyTexture,
+			"expert" => ReportUI.expertDifficultyTexture,
+			"master" => ReportUI.masterDifficultyTexture,
+			_ => ReportUI.customModDifficultyTexture
+		};
+
+		private LocalizedText DifficultyText => Consumable.Difficulty switch {
+			//"classic" => Munchies.instance.GetLocalization(MunchiesLocKey.ExpertDifficultyTooltip),
+			"expert" => Munchies.instance.GetLocalization(MunchiesLocKey.ExpertDifficultyTooltip),
+			"master" => Munchies.instance.GetLocalization(MunchiesLocKey.MasterDifficultyTooltip),
+			_ => Munchies.ModDifficultyText.WithFormatArgs(ReportUISystem.Instance.ReportUI.CurrentTab.ModTabName, Consumable.Difficulty)
 		};
 		#endregion
 	}

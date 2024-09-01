@@ -1,4 +1,5 @@
 using Munchies.Models;
+using Munchies.Models.Enums;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -8,10 +9,11 @@ using Terraria.ModLoader;
 namespace Munchies {
 	// Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
 
-	public class Munchies: Mod {
+	public class Munchies : Mod {
 		internal static Munchies instance;
 		internal static Report report;
 		internal static LocalizedText ConcatenateNewline;
+		internal static LocalizedText ModDifficultyText;
 
 		internal static ModKeybind ToggleReportHotKey;
 
@@ -22,6 +24,7 @@ namespace Munchies {
 			instance = this;
 
 			ConcatenateNewline = this.GetLocalization("Common.ConcatenateNewline");
+			ModDifficultyText = this.GetLocalization("Difficulties.CustomMod.Tooltip");
 			ToggleReportHotKey = KeybindLoader.RegisterKeybind(this, "ToggleReport", "K");
 
 			report ??= new(); // initialize the report if it is null
@@ -63,13 +66,17 @@ namespace Munchies {
 				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
 				ModItem item = args[3] as ModItem;
 				Func<bool> hasBeenConsumed = args[5] as Func<bool>;
-				LocalizedText extraTooltip = args.Length >= 7 ? args[6] as LocalizedText : null;
+				string difficulty = args.Length >= 7 ? args[6] as string : "classic";
+				LocalizedText extraTooltip = args.Length >= 8 ? args[7] as LocalizedText : null;
+				Func<bool> isAvailable = args.Length >= 9 ? args[8] as Func<bool> : null;
 
 				consumable = new(
 					modItem: item,
 					CategoryOrCustomColor: args[4],
 					currentCount: () => hasBeenConsumed().ToInt(),
 					totalCount: () => 1,
+					difficulty: difficulty,
+					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
 
@@ -92,13 +99,17 @@ namespace Munchies {
 				ModItem item = args[3] as ModItem;
 				Func<int> currentCount = args[5] as Func<int>;
 				Func<int> totalCount = args[6] as Func<int>;
-				LocalizedText extraTooltip = args.Length >= 8 ? args[7] as LocalizedText : null;
+				string difficulty = args.Length >= 8 ? args[7] as string : "classic";
+				LocalizedText extraTooltip = args.Length >= 9 ? args[8] as LocalizedText : null;
+				Func<bool> isAvailable = args.Length >= 10 ? args[9] as Func<bool> : null;
 
 				consumable = new(
 					modItem: item,
 					CategoryOrCustomColor: args[4],
 					currentCount: currentCount,
 					totalCount: totalCount,
+					difficulty: difficulty,
+					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
 
@@ -118,13 +129,17 @@ namespace Munchies {
 				int itemId = int.Parse(args[2] as string);
 				Func<int> currentCount = args[4] as Func<int>;
 				Func<int> totalCount = args[5] as Func<int>;
-				LocalizedText extraTooltip = args.Length >= 7 ? args[6] as LocalizedText : null;
+				string difficulty = args.Length >= 7 ? args[6] as string : "classic";
+				LocalizedText extraTooltip = args.Length >= 8 ? args[7] as LocalizedText : null;
+				Func<bool> isAvailable = args.Length >= 9 ? args[8] as Func<bool> : null;
 
 				Consumable consumable = new(
 					vanillaItemId: itemId,
 					type: GetType(args[3] as string),
 					currentCount: currentCount,
 					totalCount: totalCount,
+					difficulty: difficulty,
+					available: isAvailable,
 					extraTooltip: extraTooltip
 				);
 
@@ -139,7 +154,17 @@ namespace Munchies {
 			if (Enum.TryParse(type, out ConsumableType consumableType)) {
 				return consumableType;
 			} else {
-				return ConsumableType.player_normal;
+				return ConsumableType.player;
+			}
+		}
+
+		private static Difficulty? GetDifficulty(string diff) {
+			if (diff == "") return null;
+
+			if (Enum.TryParse(diff, out Difficulty difficulty)) {
+				return difficulty;
+			} else {
+				return Difficulty.mod_custom;
 			}
 		}
 	}

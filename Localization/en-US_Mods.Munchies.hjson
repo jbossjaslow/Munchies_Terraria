@@ -28,8 +28,14 @@ Common.ConcatenateNewline:
 	'''
 
 ConsumableTypes: {
-	player_expert.Tooltip: "[Expert Only]"
-	world.Tooltip: "[Once per World]"
+	Player.Tooltip: Saved per Player
+	World.Tooltip: "[c/f26fee:Saved per World]"
+}
+
+Difficulties: {
+	Expert.Tooltip: "[c/eb9b34:Expert Mode Only]"
+	Master.Tooltip: "[c/0000FF:Master Mode Only]"
+	CustomMod.Tooltip: "[c/00A5FF:{0} - {1} Mode Only]"
 }
 
 UI: {

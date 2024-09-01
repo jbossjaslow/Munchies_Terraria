@@ -29,13 +29,18 @@ namespace Munchies.UIElements {
 		readonly float panelHeight = 500f;
 		public static readonly float tabSize = 36f;
 
-		private bool HasBeenInitialized = false;
+		public bool HasBeenInitialized = false;
 		private bool mainPanelPosSetFromSavedPos = false;
 
 		public static readonly Color BackgroundColor = new(73, 94, 171);
 
 		public static Asset<Texture2D> buttonDeleteTexture;
 		public static Asset<Texture2D> completionTexture;
+
+		public static Asset<Texture2D> classicDifficultyTexture;
+		public static Asset<Texture2D> expertDifficultyTexture;
+		public static Asset<Texture2D> masterDifficultyTexture;
+		public static Asset<Texture2D> customModDifficultyTexture;
 
 		public List<ConsumableMod> completedTabs = [];
 
@@ -301,7 +306,7 @@ namespace Munchies.UIElements {
 
 			// current tab has not been evaluated
 			foreach(Consumable consumable in CurrentConsumables) {
-				if (!consumable.HasBeenConsumed) {
+				if (consumable.Available() && !consumable.HasBeenConsumed) {
 					return;
 				}
 			}
