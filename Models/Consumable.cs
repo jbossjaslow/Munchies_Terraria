@@ -2,14 +2,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models.Enums;
-using Munchies.UIElements;
 using Munchies.Utilities;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.UI;
 
 namespace Munchies.Models {
 	public class Consumable {
@@ -26,7 +24,7 @@ namespace Munchies.Models {
 		public int ID;
 		public bool UsingMissingTexture;
 		public LocalizedText DifficultyText = LocalizedText.Empty;
-		public bool Vanilla;
+		public bool Vanilla => ID < ItemID.Count;
 
 		public Item Item;
 
@@ -38,6 +36,7 @@ namespace Munchies.Models {
 			TotalCount = totalCount;
 			SetTexture(modItem.Texture);
 			ID = modItem.Type;
+			if (Vanilla) throw new Exception($"This item ID ({ID}) is within the Vanilla range of IDs when it should not be");
 			Difficulty = difficulty;
 			Available = available ?? AlwaysTrue;
 			Type = GetModdedType(categoryName);
@@ -48,19 +47,19 @@ namespace Munchies.Models {
 			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type));
 
 			SetDifficultyText(difficulty);
-			Vanilla = false;
 
 			Item = modItem.Item.Clone();
 		}
 
 		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null, LocalizedText acquisitionText = null) {
+			ID = vanillaItemId;
+			if (!Vanilla) throw new Exception($"This item ID ({ID}) is not within the Vanilla range of IDs when it should be");
 			DisplayText = Lang.GetItemName(vanillaItemId);
 			HoverText = acquisitionText ?? Language.GetText($"ItemTooltip.{ItemID.Search.GetName(vanillaItemId)}");
 			CurrentCount = currentCount;
 			TotalCount = totalCount;
 			SetTexture(vanillaItemId);
 			Type = type;
-			ID = vanillaItemId;
 			Difficulty = difficulty;
 			Available = available ?? AlwaysTrue;
 
@@ -69,7 +68,8 @@ namespace Munchies.Models {
 			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type));
 
 			SetDifficultyText(difficulty);
-			Vanilla = true;
+
+			//if (ContentSamples.ItemsByType.TryGetValue(ID, out var vanillaItem)) Item = vanillaItem.Clone();
 		}
 
 		//Helper since we have access to Difficulty enum

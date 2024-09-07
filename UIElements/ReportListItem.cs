@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models;
 using Munchies.Models.Enums;
@@ -12,8 +11,8 @@ using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace Munchies.UIElements {
-	public class ReportListItem(Consumable consumable): UIElement() {
-		public readonly Consumable Consumable = consumable;
+	public class ReportListItem: UIElement {
+		public readonly Consumable Consumable;
 
 		// Maximum width of any of the images
 		private readonly float imageAssetMaxWidth = 36;
@@ -24,12 +23,21 @@ namespace Munchies.UIElements {
 
 		UIPanel panel;
 		UIText text;
-		UIImage itemImage;
+		CenteredUIImage itemImage;
 		UIText ratioText;
 		UIImage checkMarkImage;
 		UIImage difficultyIcon;
 
 		LocalizedText difficultyText;
+		private Item Item;
+
+		public ReportListItem(Consumable consumable) {
+			Consumable = consumable;
+			if (consumable.Vanilla && ContentSamples.ItemsByType.TryGetValue(consumable.ID, out var vanillaItem))
+				Item = vanillaItem.Clone();
+			else if (!consumable.Vanilla)
+				Item = consumable.Item;
+		}
 
 		public override void OnInitialize() {
 			panel = new() {
@@ -40,12 +48,13 @@ namespace Munchies.UIElements {
 			Append(panel);
 
 			itemImage = new(Consumable.Texture);
-			itemImage.Left.Set(spacing, 0);
-			itemImage.Width.Set(Consumable.Texture.Width(), 0f);
-			itemImage.Height.Set(Consumable.Texture.Height(), 0f);
+			//itemImage.Left.Set(spacing, 0);
+			itemImage.Width.Set(imageAssetMaxWidth + (spacing * 2), 0f);
+			itemImage.Height.Set(Height.Pixels, 0f);
 			itemImage.SetPadding(0);
 			itemImage.VAlign = 0.5f;
 			panel.Append(itemImage);
+
 
 			text = new(text: Consumable.DisplayText) {
 				TextColor = GetDisplayTextColor(),
@@ -71,15 +80,9 @@ namespace Munchies.UIElements {
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			base.DrawSelf(spriteBatch);
 
-			if (itemImage?.IsMouseHovering ?? false && Consumable.Item != null) {
-				if (Consumable.Vanilla && ContentSamples.ItemsByType.TryGetValue(Consumable.ID, out var vanillaItem)) {
-					Item cloneItem = vanillaItem.Clone();
-					Main.hoverItemName = cloneItem.Name;
-					Main.HoverItem = cloneItem;
-				} else if (!Consumable.Vanilla) {
-					Main.hoverItemName = Consumable.Item.Name;
-					Main.HoverItem = Consumable.Item;
-				}
+			if (Item != null && (itemImage?.IsMouseHovering ?? false)) {
+				Main.hoverItemName = Item.Name;
+				Main.HoverItem = Item;
 			} else if (difficultyIcon != null && difficultyIcon.IsMouseHovering) {
 				UICommon.TooltipMouseText(text: GetDifficultyText());
 			} else if (panel?.IsMouseHovering ?? false) {
@@ -209,3 +212,8 @@ namespace Munchies.UIElements {
 		#endregion
 	}
 }
+
+/* From BossChecklist
+ * BossUISystem.Instance.UIHoverTextColor = Main.DiscoColor; // mimics Expert Mode color
+ * BossUISystem.Instance.UIHoverTextColor = new Color(255, (byte)(Main.masterColor * 200f), 0, Main.mouseTextColor); // mimics Master Mode color
+ */

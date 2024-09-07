@@ -29,6 +29,9 @@ Devs can also write mods specifically to add mod support. I will get to other ad
 [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3312725122]Calamity Addon[/url] - Adds support for Calamity
 [/list]
 
+[h3]Other Mod Support[/h3]
+With the 1.4 update, Munchies can now support mods like [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2619954303&searchtext=recipe+browser]Recipe Browser[/url] and others that rely on using a custom keybind while hovering over an item
+
 [h2]Source Code[/h2]
 The source code from this mod can be found [url=https://github.com/jbossjaslow/Munchies_Terraria]here[/url], if you would like to read it or add an issue to the board.
 

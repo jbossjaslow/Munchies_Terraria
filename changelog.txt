@@ -1,10 +1,7 @@
-﻿Version 1.3
-Too many changes to list
+﻿Version 1.4.1
 
 [list]
-[*]Changed item image to item object, shows Item text - Recipe Browser and similar mods are now compatible with Munchies
-[*]Hovertext on the panel itself now shows acquisition info (if provided), which place the item applies to (player or world), an extra tooltip (if provided), and difficulty info (if expert or harder)
-[*]Fixed title resizing for longer titles
-[*]Localized Terraria tab name and vanilla tab name (text shown when no external mods are added)
-[*]Updated mod images
+[*]Calling into the mod with a modded item that has the wrong type (aka id) will throw an exception
+[*]Item images are now centered in their containers
+[*]Item image containers now take up the full height and a greater width, so the hover text flickers less
 [/list]
