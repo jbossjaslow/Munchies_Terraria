@@ -45,3 +45,22 @@ Difficulty: {
 	master: "[c/0000FF:Master Mode Only]"
 	mod_custom: "[c/00A5FF:{0} - {1} Mode Only]"
 }
+
+Acquisition: {
+	LifeCrystal: Found in the Underground layer and below
+	LifeFruit: Found in the Underground jungle layer and below in Hardmode
+	ManaCrystal: Crafted from 5 mana stars
+	ArtisanLoaf: Sold by Skeleton Merchant (found in Cavern layer) during Waning Crescent, New Moon, and Waxing Crescent moon phases - Not sold after consuming
+	TorchGodsFavor: Rewarded once Torch God has been defeated (place 101 torches in condensed area, dodge all projectiles)
+	VitalCrystal: Shimmer a Life Crystal
+	AegisFruit: Shimmer a Life Fruit
+	ArcaneCrystal: Shimmer a Mana Crystal
+	Ambrosia: Shimmer any fruit
+	GummyWorm: Shimmer a Gold Worm (0.25% chance to spawn in place of a normal worm)
+	GalaxyPearl: Shimmer a Pink Pearl (1.33% drop from Oysters)
+	DemonHeart: Dropped by Wall of Flesh's Treasure Bag after defeating in Expert Mode
+	MinecartUpgradeKit: Combine Mechanical Wheel Piece (Twins), Mechanical Wagon Piece (Destroyer), and Mechanical Battery Piece (Skeletron Prime) in Expert mode
+	AdvCombatTech1: Fish during a Blood Moon
+	AdvCombatTech2: Shimmer a Spell Tome (bought from Wizard)
+	PeddlersSatchel: Shimmer a Peddler's Hat (dropped by Traveling Merchant on death)
+}

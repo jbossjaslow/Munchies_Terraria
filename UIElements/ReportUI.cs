@@ -104,12 +104,6 @@ namespace Munchies.UIElements {
 		}
 
 		#region Initialize UI
-		//public override void OnInitialize() {
-		//	base.OnInitialize();
-
-		//	CurrentTab = Report.VanillaConsumableMod;
-		//}
-
 		private void InitializeUI() {
 			CurrentTab = Report.VanillaConsumableMod;
 

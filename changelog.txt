@@ -2,6 +2,9 @@
 Too many changes to list
 
 [list]
+[*]Changed item image to item object, shows Item text - Recipe Browser and similar mods are now compatible with Munchies
+[*]Hovertext on the panel itself now shows acquisition info (if provided), which place the item applies to (player or world), an extra tooltip (if provided), and difficulty info (if expert or harder)
 [*]Fixed title resizing for longer titles
 [*]Localized Terraria tab name and vanilla tab name (text shown when no external mods are added)
+[*]Updated mod images
 [/list]

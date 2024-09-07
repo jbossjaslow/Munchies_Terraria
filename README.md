@@ -193,7 +193,8 @@ private void AddSingleModConsumable(Mod munchiesMod) {
 		Color.Red, // custom text color (or null)
 		"expert", // difficulty (or null) - this changes the tooltip text and adds a difficulty icon to show that this item is only available in expert mode. Does not affect availablility, this still needs to be set on its own
 		null, // extra tooltip of type LocalizedText
-		() => Main.expertMode // availability, or null if always available
+		() => Main.expertMode, // availability, or null if always available
+		null // acquisition text of type LocalizedText, or null if not necessary
 	};
 	munchiesMod.Call(consumableArgs);
 }
@@ -210,7 +211,8 @@ private void AddMultiModConsumable(Mod munchiesMod) {
 		Color.Red, // custom text color (or null)
 		"expert", // difficulty (or null) - this changes the tooltip text and adds a difficulty icon to show that this item is only available in expert mode. Does not affect availablility, this still needs to be set on its own
 		null, // extra tooltip of type LocalizedText
-		() => Main.expertMode // availability, or null if always available
+		() => Main.expertMode, // availability, or null if always available
+		null // acquisition text of type LocalizedText, or null if not necessary
 	};
 	munchiesMod.Call(consumableArgs);
 }
@@ -224,7 +226,8 @@ private void AddSingleVanillaConsumable(Mod munchiesMod) {
 		() => Main.LocalPlayer.ateArtisanBread, // Func<bool>
 		"classic", // difficulty (or null)
 		null, // extra tooltip of type LocalizedText
-		() => true // availability, or null if always available
+		() => true, // availability, or null if always available
+		null // acquisition text of type LocalizedText, or null if not necessary
 	};
 	munchiesMod.Call(consumableArgs);
 }
@@ -239,7 +242,8 @@ private void AddMultiVanillaConsumable(Mod munchiesMod) {
 		() => 15, // Func<int>
 		"classic", // difficulty (or null)
 		null, // extra tooltip of type LocalizedText
-		() => true // availability, or null if always available
+		() => true, // availability, or null if always available
+		null // acquisition text of type LocalizedText, or null if not necessary
 	};
 	munchiesMod.Call(consumableArgs);
 }

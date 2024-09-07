@@ -2,12 +2,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models.Enums;
+using Munchies.UIElements;
 using Munchies.Utilities;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace Munchies.Models {
 	public class Consumable {
@@ -24,11 +26,14 @@ namespace Munchies.Models {
 		public int ID;
 		public bool UsingMissingTexture;
 		public LocalizedText DifficultyText = LocalizedText.Empty;
+		public bool Vanilla;
+
+		public Item Item;
 
 		#region Init
-		public Consumable(ModItem modItem, string categoryName, Color? CustomColor, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
+		public Consumable(ModItem modItem, string categoryName, Color? CustomColor, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null, LocalizedText acquisitionText = null) {
 			DisplayText = modItem.DisplayName;
-			HoverText = modItem.Tooltip;
+			HoverText = acquisitionText ?? modItem.Tooltip; // If no acquisition text is provided, just use the tooltip again
 			CurrentCount = currentCount;
 			TotalCount = totalCount;
 			SetTexture(modItem.Texture);
@@ -43,11 +48,14 @@ namespace Munchies.Models {
 			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type));
 
 			SetDifficultyText(difficulty);
+			Vanilla = false;
+
+			Item = modItem.Item.Clone();
 		}
 
-		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) {
+		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, string difficulty, Func<bool> available = null, LocalizedText extraTooltip = null, LocalizedText acquisitionText = null) {
 			DisplayText = Lang.GetItemName(vanillaItemId);
-			HoverText = Language.GetText($"ItemTooltip.{ItemID.Search.GetName(vanillaItemId)}");
+			HoverText = acquisitionText ?? Language.GetText($"ItemTooltip.{ItemID.Search.GetName(vanillaItemId)}");
 			CurrentCount = currentCount;
 			TotalCount = totalCount;
 			SetTexture(vanillaItemId);
@@ -61,11 +69,12 @@ namespace Munchies.Models {
 			HoverText = Munchies.ConcatenateNewline.WithFormatArgs(HoverText, EnumUtil.GetEnumText(Type));
 
 			SetDifficultyText(difficulty);
+			Vanilla = true;
 		}
 
 		//Helper since we have access to Difficulty enum
-		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, Difficulty difficulty, Func<bool> available = null, LocalizedText extraTooltip = null) :
-			this(vanillaItemId, type, currentCount, totalCount, difficulty.ToString(), available, extraTooltip) { }
+		public Consumable(int vanillaItemId, ConsumableType type, Func<int> currentCount, Func<int> totalCount, Difficulty difficulty, Func<bool> available = null, LocalizedText extraTooltip = null, LocalizedText acquisitionText = null) :
+			this(vanillaItemId, type, currentCount, totalCount, difficulty.ToString(), available, extraTooltip, acquisitionText: acquisitionText) { }
 		#endregion
 
 		#region Public helpers
@@ -86,7 +95,7 @@ namespace Munchies.Models {
 				Texture = ModContent.Request<Texture2D>(texturePath);
 				UsingMissingTexture = false;
 			} else {
-				Texture = ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
+				Texture = Munchies.UnknownTexture;
 				UsingMissingTexture = true;
 			}
 		}

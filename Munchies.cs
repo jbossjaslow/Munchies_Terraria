@@ -1,7 +1,9 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models;
 using Munchies.Models.Enums;
 using Munchies.Utilities;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -18,9 +20,24 @@ namespace Munchies {
 		internal static LocalizedText DefaultTitle;
 
 		internal static ModKeybind ToggleReportHotKey;
+		public static Asset<Texture2D> UnknownTexture;
 
-		// Maybe remove this line
-		public Munchies() { }
+		internal static LocalizedText LifeCrystalAcquisitionText;
+		internal static LocalizedText LifeFruitAcquisitionText;
+		internal static LocalizedText ManaCrystalAcquisitionText;
+		internal static LocalizedText ArtisanLoafAcquisitionText;
+		internal static LocalizedText TorchGodsFavorAcquisitionText;
+		internal static LocalizedText VitalCrystalAcquisitionText;
+		internal static LocalizedText AegisFruitAcquisitionText;
+		internal static LocalizedText ArcaneCrystalAcquisitionText;
+		internal static LocalizedText AmbrosiaAcquisitionText;
+		internal static LocalizedText GummyWormAcquisitionText;
+		internal static LocalizedText GalaxyPearlAcquisitionText;
+		internal static LocalizedText DemonHeartAcquisitionText;
+		internal static LocalizedText MinecartUpgradeKitAcquisitionText;
+		internal static LocalizedText AdvCombatTech1AcquisitionText;
+		internal static LocalizedText AdvCombatTech2AcquisitionText;
+		internal static LocalizedText PeddlersSatchelAcquisitionText;
 
 		public override void Load() {
 			instance = this;
@@ -29,6 +46,24 @@ namespace Munchies {
 			ConcatenateNewline = this.GetLocalization("Common.ConcatenateNewline");
 			ToggleReportHotKey = KeybindLoader.RegisterKeybind(this, "ToggleReport", "K");
 			DefaultTitle = this.GetLocalization("UI.Report.Consumables");
+			UnknownTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/Bestiary/Icon_Locked");
+
+			LifeCrystalAcquisitionText = this.GetLocalization("Acquisition.LifeCrystal"); 
+			LifeFruitAcquisitionText = this.GetLocalization("Acquisition.LifeFruit"); 
+			ManaCrystalAcquisitionText = this.GetLocalization("Acquisition.ManaCrystal"); 
+			ArtisanLoafAcquisitionText = this.GetLocalization("Acquisition.ArtisanLoaf"); 
+			TorchGodsFavorAcquisitionText = this.GetLocalization("Acquisition.TorchGodsFavor"); 
+			VitalCrystalAcquisitionText = this.GetLocalization("Acquisition.VitalCrystal"); 
+			AegisFruitAcquisitionText = this.GetLocalization("Acquisition.AegisFruit"); 
+			ArcaneCrystalAcquisitionText = this.GetLocalization("Acquisition.ArcaneCrystal"); 
+			AmbrosiaAcquisitionText = this.GetLocalization("Acquisition.Ambrosia"); 
+			GummyWormAcquisitionText = this.GetLocalization("Acquisition.GummyWorm"); 
+			GalaxyPearlAcquisitionText = this.GetLocalization("Acquisition.GalaxyPearl"); 
+			DemonHeartAcquisitionText = this.GetLocalization("Acquisition.DemonHeart"); 
+			MinecartUpgradeKitAcquisitionText = this.GetLocalization("Acquisition.MinecartUpgradeKit"); 
+			AdvCombatTech1AcquisitionText = this.GetLocalization("Acquisition.AdvCombatTech1"); 
+			AdvCombatTech2AcquisitionText = this.GetLocalization("Acquisition.AdvCombatTech2"); 
+			PeddlersSatchelAcquisitionText = this.GetLocalization("Acquisition.PeddlersSatchel"); 
 
 			report ??= new(); // initialize the report if it is null
 		}
@@ -66,24 +101,18 @@ namespace Munchies {
 				ConsumableMod externalMod = new(mod);
 
 				object apiString = args[2];
-				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
-				ModItem item = args[3] as ModItem;
-				string categoryName = args[4] as string;
-				Func<bool> hasBeenConsumed = args[5] as Func<bool>;
-				object customColorObject = args.Length >= 7 ? args[6] : null;
-				string difficulty = args.Length >= 8 ? args[7] as string : Difficulty.classic.ToString();
-				LocalizedText extraTooltip = args.Length >= 9 ? args[8] as LocalizedText : null;
-				Func<bool> isAvailable = args.Length >= 10 ? args[9] as Func<bool> : null;
+				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.4
 
 				Consumable consumable = new(
-					modItem: item,
-					categoryName: categoryName,
-					CustomColor: (Color?)customColorObject,
-					currentCount: () => hasBeenConsumed().ToInt(),
+					modItem: args[3] as ModItem,
+					categoryName: args[4] as string,
+					CustomColor: (Color?)(args.Length >= 7 ? args[6] : null),
+					currentCount: () => (args[5] as Func<bool>)().ToInt(),
 					totalCount: () => 1,
-					difficulty: difficulty ?? Difficulty.classic.ToString(),
-					available: isAvailable,
-					extraTooltip: extraTooltip
+					difficulty: (args.Length >= 8 ? args[7] as string : Difficulty.classic.ToString()) ?? Difficulty.classic.ToString(),
+					available: args.Length >= 10 ? args[9] as Func<bool> : null,
+					extraTooltip: args.Length >= 9 ? args[8] as LocalizedText : null,
+					acquisitionText: args.Length >= 11 ? args[10] as LocalizedText : null
 				);
 
 				return Report.AddConsumableToList(mod: externalMod, consumable: consumable);
@@ -100,25 +129,18 @@ namespace Munchies {
 				ConsumableMod externalMod = new(mod);
 
 				object apiString = args[2];
-				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
-				ModItem item = args[3] as ModItem;
-				string categoryName = args[4] as string;
-				Func<int> currentCount = args[5] as Func<int>;
-				Func<int> totalCount = args[6] as Func<int>;
-				object customColorObject = args.Length >= 8 ? args[7] : null;
-				string difficulty = args.Length >= 9 ? args[8] as string : Difficulty.classic.ToString();
-				LocalizedText extraTooltip = args.Length >= 10 ? args[9] as LocalizedText : null;
-				Func<bool> isAvailable = args.Length >= 11 ? args[10] as Func<bool> : null;
+				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.4
 
 				Consumable consumable = new(
-					modItem: item,
-					categoryName: categoryName,
-					CustomColor: (Color?)customColorObject,
-					currentCount: currentCount,
-					totalCount: totalCount,
-					difficulty: difficulty ?? Difficulty.classic.ToString(),
-					available: isAvailable,
-					extraTooltip: extraTooltip
+					modItem: args[3] as ModItem,
+					categoryName: args[4] as string,
+					CustomColor: (Color?)(args.Length >= 8 ? args[7] : null),
+					currentCount: args[5] as Func<int>,
+					totalCount: args[6] as Func<int>,
+					difficulty: (args.Length >= 9 ? args[8] as string : Difficulty.classic.ToString()) ?? Difficulty.classic.ToString(),
+					available: args.Length >= 11 ? args[10] as Func<bool> : null,
+					extraTooltip: args.Length >= 10 ? args[9] as LocalizedText : null,
+					acquisitionText: args.Length >= 12 ? args[11] as LocalizedText : null
 				);
 
 				return Report.AddConsumableToList(mod: externalMod, consumable: consumable);
@@ -131,22 +153,17 @@ namespace Munchies {
 		private bool HandleAddVanillaConsumable(params object[] args) {
 			try {
 				object apiString = args[1];
-				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
-
-				int itemId = int.Parse(args[2].ToString());
-				Func<bool> hasBeenConsumed = args[4] as Func<bool>;
-				string difficulty = args.Length >= 6 ? args[5] as string : Difficulty.classic.ToString();
-				LocalizedText extraTooltip = args.Length >= 7 ? args[6] as LocalizedText : null;
-				Func<bool> isAvailable = args.Length >= 8 ? args[7] as Func<bool> : null;
+				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.4
 
 				Consumable consumable = new(
-					vanillaItemId: itemId,
+					vanillaItemId: int.Parse(args[2].ToString()),
 					type: GetType(args[3] as string),
-					currentCount: () => hasBeenConsumed().ToInt(),
+					currentCount: () => (args[4] as Func<bool>)().ToInt(),
 					totalCount: () => 1,
-					difficulty: difficulty ?? Difficulty.classic.ToString(),
-					available: isAvailable,
-					extraTooltip: extraTooltip
+					difficulty: (args.Length >= 6 ? args[5] as string : Difficulty.classic.ToString()) ?? Difficulty.classic.ToString(),
+					available: args.Length >= 8 ? args[7] as Func<bool> : null,
+					extraTooltip: args.Length >= 7 ? args[6] as LocalizedText : null,
+					acquisitionText: args.Length >= 9 ? args[8] as LocalizedText : null
 				);
 
 				return Report.AddConsumableToList(mod: Report.VanillaConsumableMod, consumable: consumable);
@@ -159,23 +176,17 @@ namespace Munchies {
 		private bool HandleAddVanillaMultiConsumable(params object[] args) {
 			try {
 				object apiString = args[1];
-				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.3
-
-				int itemId = int.Parse(args[2].ToString());
-				Func<int> currentCount = args[4] as Func<int>;
-				Func<int> totalCount = args[5] as Func<int>;
-				string difficulty = args.Length >= 7 ? args[6] as string : Difficulty.classic.ToString();
-				LocalizedText extraTooltip = args.Length >= 8 ? args[7] as LocalizedText : null;
-				Func<bool> isAvailable = args.Length >= 9 ? args[8] as Func<bool> : null;
+				Version apiVersion = apiString is string ? new Version(apiString as string) : this.Version; // current as of this update is 1.4
 
 				Consumable consumable = new(
-					vanillaItemId: itemId,
+					vanillaItemId: int.Parse(args[2].ToString()),
 					type: GetType(args[3] as string),
-					currentCount: currentCount,
-					totalCount: totalCount,
-					difficulty: difficulty ?? Difficulty.classic.ToString(),
-					available: isAvailable,
-					extraTooltip: extraTooltip
+					currentCount: args[4] as Func<int>,
+					totalCount: args[5] as Func<int>,
+					difficulty: (args.Length >= 7 ? args[6] as string : Difficulty.classic.ToString()) ?? Difficulty.classic.ToString(),
+					available: args.Length >= 9 ? args[8] as Func<bool> : null,
+					extraTooltip: args.Length >= 8 ? args[7] as LocalizedText : null,
+					acquisitionText: args.Length >= 10 ? args[9] as LocalizedText : null
 				);
 
 				return Report.AddConsumableToList(mod: Report.VanillaConsumableMod, consumable: consumable);

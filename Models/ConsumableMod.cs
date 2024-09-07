@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Munchies.UIElements;
 using ReLogic.Content;
 using Terraria;
 using Terraria.ModLoader;
@@ -35,11 +36,11 @@ namespace Munchies.Models {
 					return texture;
 				} else {
 					UsingMissingTexture = true;
-					return ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
+					return Munchies.UnknownTexture;
 				}
 			} else {
 				UsingMissingTexture = true;
-				return ModContent.Request<Texture2D>("Terraria/Images/UI/UI_quickicon1");
+				return Munchies.UnknownTexture;
 			}
 		}
 

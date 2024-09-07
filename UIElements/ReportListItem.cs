@@ -1,16 +1,18 @@
-﻿using Microsoft.Xna.Framework;
+﻿using log4net.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Munchies.Models;
 using Munchies.Models.Enums;
 using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace Munchies.UIElements {
-	public class ReportListItem(Consumable consumable) : UIElement() {
+	public class ReportListItem(Consumable consumable): UIElement() {
 		public readonly Consumable Consumable = consumable;
 
 		// Maximum width of any of the images
@@ -68,8 +70,16 @@ namespace Munchies.UIElements {
 
 		protected override void DrawSelf(SpriteBatch spriteBatch) {
 			base.DrawSelf(spriteBatch);
-			if ((itemImage?.IsMouseHovering ?? false) && Consumable.UsingMissingTexture) {
-				UICommon.TooltipMouseText(text: "Missing Texture");
+
+			if (itemImage?.IsMouseHovering ?? false && Consumable.Item != null) {
+				if (Consumable.Vanilla && ContentSamples.ItemsByType.TryGetValue(Consumable.ID, out var vanillaItem)) {
+					Item cloneItem = vanillaItem.Clone();
+					Main.hoverItemName = cloneItem.Name;
+					Main.HoverItem = cloneItem;
+				} else if (!Consumable.Vanilla) {
+					Main.hoverItemName = Consumable.Item.Name;
+					Main.HoverItem = Consumable.Item;
+				}
 			} else if (difficultyIcon != null && difficultyIcon.IsMouseHovering) {
 				UICommon.TooltipMouseText(text: GetDifficultyText());
 			} else if (panel?.IsMouseHovering ?? false) {
