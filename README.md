@@ -43,6 +43,10 @@ Use this arg to pass in any extra lines you want to add to the normal item toolt
 Whether the item is able to be used in the current context. For example, the Demon Heart can only be used in expert mode, so `() => Main.expertMode` is passed here for the vanilla item.
 If this value is false, the item text (and checkmark, if applicable) will be greyed out, but still display. This also prevents the completion checker from considering this item. `null` can be passed if it's always available
 
+#### 10: `LocalizedText` Acquisition text
+Use this arg to pass in text explaining how to acquire your item. This will be added as the first line of the the hover tooltip.
+`null` can be passed as well if no acquisition text is needed
+
 ---
 
 ### Adding a Multi-Use Consumable
@@ -88,6 +92,10 @@ Use this arg to pass in any extra lines you want to add to the normal item toolt
 Whether the item is able to be used in the current context. For example, the Demon Heart can only be used in expert mode, so `() => Main.expertMode` is passed here for the vanilla item.
 If this value is false, the item text (and checkmark, if applicable) will be greyed out, but still display. This also prevents the completion checker from considering this item. `null` can be passed if it's always available
 
+#### 11: `LocalizedText` Acquisition text
+Use this arg to pass in text explaining how to acquire your item. This will be added as the first line of the the hover tooltip.
+`null` can be passed as well if no acquisition text is needed
+
 ---
 
 ### Adding a Vanilla Consumable
@@ -123,6 +131,10 @@ Use this arg to pass in any extra lines you want to add to the normal item toolt
 #### 7: `Func<bool>` Availability
 Whether the item is able to be used in the current context. For example, the Demon Heart can only be used in expert mode, so `() => Main.expertMode` is passed here for the vanilla item.
 If this value is false, the item text (and checkmark, if applicable) will be greyed out, but still display. This also prevents the completion checker from considering this item. `null` can be passed if it's always available
+
+#### 8: `LocalizedText` Acquisition text
+Use this arg to pass in text explaining how to acquire your item. This will be added as the first line of the the hover tooltip.
+`null` can be passed as well if no acquisition text is needed
 
 ---
 
@@ -162,6 +174,10 @@ Use this arg to pass in any extra lines you want to add to the normal item toolt
 #### 8: `Func<bool>` Availability
 Whether the item is able to be used in the current context. For example, the Demon Heart can only be used in expert mode, so `() => Main.expertMode` is passed here for the vanilla item.
 If this value is false, the item text (and checkmark, if applicable) will be greyed out, but still display. This also prevents the completion checker from considering this item. `null` can be passed if it's always available
+
+#### 9: `LocalizedText` Acquisition text
+Use this arg to pass in text explaining how to acquire your item. This will be added as the first line of the the hover tooltip.
+`null` can be passed as well if no acquisition text is needed
 
 ---
 
