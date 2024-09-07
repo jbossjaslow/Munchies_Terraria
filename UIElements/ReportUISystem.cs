@@ -30,7 +30,7 @@ namespace Munchies.UIElements {
 				_reportUI = new UserInterface();
 
 				ReportListItem.CheckMarkTexture = Mod.Assets.Request<Texture2D>("UIElements/checkMark");
-				ReportUI.buttonDeleteTexture = Mod.Assets.Request<Texture2D>("UIElements/xMark");
+				ReportUI.closeButtonTexture = Mod.Assets.Request<Texture2D>("UIElements/xMark");
 				ReportUI.completionTexture = ModContent.Request<Texture2D>("Terraria/Images/Item_4954");
 
 				ReportUI.classicDifficultyTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/WorldCreation/IconDifficultyNormal");

@@ -2,37 +2,12 @@ using Munchies.Models.Enums;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace Munchies.Models {
 	public class Report {
-		public static ConsumableMod VanillaConsumableMod = new(modTabName: "Terraria", modTabTexturePath: "Terraria/Images/Item_4765");
+		public static ConsumableMod VanillaConsumableMod = new(modTabName: Language.GetTextValue("RandomWorldName_Location.Terraria"), modTabTexturePath: "Terraria/Images/Item_4765");
 		public static List<ConsumablesEntry> ConsumablesList = [];
-
-		private static readonly int[] VanillaItems = [
-			// multi-use
-			ItemID.LifeCrystal,
-			ItemID.LifeFruit,
-			ItemID.ManaCrystal,
-
-			// normal
-			ItemID.ArtisanLoaf,
-			ItemID.TorchGodsFavor,
-			ItemID.AegisCrystal,
-			ItemID.AegisFruit,
-			ItemID.ArcaneCrystal,
-			ItemID.Ambrosia,
-			ItemID.GummyWorm,
-			ItemID.GalaxyPearl,
-
-			// expert
-			ItemID.DemonHeart,
-			ItemID.MinecartPowerup,
-
-			// world
-			ItemID.CombatBook,
-			ItemID.CombatBookVolumeTwo,
-			ItemID.PeddlersSatchel,
-		];
 
 		public Report() {
 			List<Consumable> vanillaConsumables = [

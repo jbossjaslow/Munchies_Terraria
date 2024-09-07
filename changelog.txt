@@ -2,9 +2,6 @@
 Too many changes to list
 
 [list]
-[*]Complete overhaul of call handling
-[*]Added support for vanilla items
-[*]Added many more fields and tweaks to the data to be more visually interesting
-[*]Added completion star if that tab is finished
-[*] Performance improvements to ensure Munchies is not stressing the system when it shows and hides
+[*]Fixed title resizing for longer titles
+[*]Localized Terraria tab name and vanilla tab name (text shown when no external mods are added)
 [/list]

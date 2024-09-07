@@ -24,7 +24,7 @@ namespace Munchies.UIElements {
 
 		public LocalizedText completedText = Munchies.instance.GetLocalization("UI.Report.Completed");
 
-		readonly float spacing = 8f;
+		readonly float spacing = 10f;
 		readonly float panelWidth = 300f;
 		readonly float panelHeight = 500f;
 		public static readonly float tabSize = 36f;
@@ -34,7 +34,7 @@ namespace Munchies.UIElements {
 
 		public static readonly Color BackgroundColor = new(73, 94, 171);
 
-		public static Asset<Texture2D> buttonDeleteTexture;
+		public static Asset<Texture2D> closeButtonTexture;
 		public static Asset<Texture2D> completionTexture;
 
 		public static Asset<Texture2D> classicDifficultyTexture;
@@ -152,7 +152,7 @@ namespace Munchies.UIElements {
 		}
 
 		private void InitializeHeaderUI() {
-			string text = Report.ConsumablesList.Count > 1 ? Report.VanillaConsumableMod.ModTabName : "Consumables";
+			string text = Report.ConsumablesList.Count > 1 ? Report.VanillaConsumableMod.ModTabName : Munchies.DefaultTitle.Value;
 			titleText = new(text: text, textScale: 1.5f) {
 				TextColor = Color.White,
 				ShadowColor = Color.Black,
@@ -160,17 +160,17 @@ namespace Munchies.UIElements {
 			};
 			titleText.Left.Set(0f, 0f);
 			titleText.SetPadding(0f);
-			titleText.Top.Set(10f, 0f);
+			titleText.Top.Set(spacing, 0f);
 			reportPanel.Append(titleText);
 			UpdateTitleTextSize();
 
 			string closeTextLocalized = Language.GetTextValue("LegacyInterface.52"); // Localized text for "Close"
-			ReportCloseButton closeButton = new(buttonDeleteTexture, closeTextLocalized, Color.Red);
-			closeButton.Left.Set(-32f, 1f);
+			ReportCloseButton closeButton = new(closeButtonTexture, closeTextLocalized, Color.Red);
+			closeButton.Left.Set(-closeButtonTexture.Width() - 10, 1f);
 			closeButton.SetPadding(0);
-			closeButton.Top.Set(10f, 0f);
-			closeButton.Width.Set(20f, 0f);
-			closeButton.Height.Set(22f, 0f);
+			closeButton.Top.Set(spacing, 0f);
+			closeButton.Width.Set(closeButtonTexture.Width(), 0f);
+			closeButton.Height.Set(closeButtonTexture.Height(), 0f);
 			closeButton.OnLeftClick += new MouseEvent(CloseButtonClicked);
 			reportPanel.Append(closeButton);
 
@@ -188,7 +188,7 @@ namespace Munchies.UIElements {
 			reportList.Width.Set(-25f, 1f);
 			reportList.HAlign = 0f;
 			reportList.Height.Set(-42f - spacing * 2, 1f);
-			reportList.ListPadding = 10f;
+			reportList.ListPadding = spacing;
 			reportList.SetPadding(0);
 			reportPanel.Append(reportList);
 
@@ -231,7 +231,7 @@ namespace Munchies.UIElements {
 		private void UpdateTitleTextSize() {
 			Recalculate();
 			CalculatedStyle textDimensions = titleText.GetInnerDimensions();
-			float maxTextWidth = panelWidth - 80; // (32px from right side + 8px spacing) * 2 = 80
+			float maxTextWidth = panelWidth - 100;
 			if (textDimensions.Width > maxTextWidth) {
 				float newScale = maxTextWidth / textDimensions.Width;
 				titleText.SetText(text: CurrentTab.ModTabName, textScale: newScale * 1.5f, large: false);
@@ -267,9 +267,9 @@ namespace Munchies.UIElements {
 				if (!Config.instance.ShowMultiUseConsumables && consumable.IsMultiUse) continue;
 
 				ReportListItem item = new(consumable);
-				item.Width.Set(-10f, 1f);
+				item.Width.Set(-spacing, 1f);
 				item.Height.Set(50, 0);
-				item.Left.Set(10f, 0f);
+				item.Left.Set(spacing, 0f);
 				reportList.Add(item);
 			}
 			reportList.Activate();

@@ -15,6 +15,7 @@ namespace Munchies {
 		internal static Munchies instance;
 		internal static Report report;
 		internal static LocalizedText ConcatenateNewline;
+		internal static LocalizedText DefaultTitle;
 
 		internal static ModKeybind ToggleReportHotKey;
 
@@ -27,6 +28,7 @@ namespace Munchies {
 			EnumUtil.LoadEnumText(this);
 			ConcatenateNewline = this.GetLocalization("Common.ConcatenateNewline");
 			ToggleReportHotKey = KeybindLoader.RegisterKeybind(this, "ToggleReport", "K");
+			DefaultTitle = this.GetLocalization("UI.Report.Consumables");
 
 			report ??= new(); // initialize the report if it is null
 		}
