@@ -1,7 +1,5 @@
-﻿Version 1.4.1
+﻿Version 1.4.2
 
 [list]
-[*]Calling into the mod with a modded item that has the wrong type (aka id) will throw an exception
-[*]Item images are now centered in their containers
-[*]Item image containers now take up the full height and a greater width, so the hover text flickers less
+[*]If a mod calling into Munchies doesn't have a small icon for the tab image, uses the main size image instead
 [/list]

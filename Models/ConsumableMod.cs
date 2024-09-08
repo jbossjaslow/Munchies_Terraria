@@ -27,6 +27,7 @@ namespace Munchies.Models {
 			VanillaMod = false;
 		}
 
+		// TODO: Clean this up later lol
 		public Asset<Texture2D> GetTexture() {
 			if (VanillaMod && texturePath != null && ModContent.HasAsset(texturePath)) {
 				return ModContent.Request<Texture2D>(texturePath);
@@ -38,6 +39,8 @@ namespace Munchies.Models {
 					UsingMissingTexture = true;
 					return Munchies.UnknownTexture;
 				}
+			} else if (mod?.HasAsset("icon") ?? false) {
+				return mod.Assets.Request<Texture2D>("icon", AssetRequestMode.ImmediateLoad); //Dimensions checked for parity with tml so it needs Immediate
 			} else {
 				UsingMissingTexture = true;
 				return Munchies.UnknownTexture;
