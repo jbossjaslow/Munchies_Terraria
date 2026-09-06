@@ -1,0 +1,106 @@
+Keybinds.ToggleReport.DisplayName: Mostrar/ocultar lista de consumibles
+
+Configs: {
+	Config: {
+		DisplayName: Configuración
+
+		AllowDragging: {
+			Label: Permitir arrastrar
+			Tooltip: Habilitar el poder mover la lista de consumibles por la pantalla
+		}
+
+		ResetDragCoords: {
+			Label: Restablecer posición de arrastre
+			Tooltip: Seleccione esto para restablecer la posición de la lista de consumibles
+		}
+
+		ShowMultiUseConsumables: {
+			Label: Mostrar consumibles multiusos
+			Tooltip: Muestra consumibles que se pueden usar un número limitado de veces, como los cristales de Vida
+		}
+	}
+}
+
+Common.ConcatenateNewline:
+	'''
+	{0}
+	{1}
+	'''
+
+ConsumableType: {
+	player: Se guarda de manera individual por personaje/jugador
+	world: "[c/f26fee:Se guarda de manera individual por partida/mundo]"
+}
+
+UI: {
+	Report: {
+		Consumables: Consumibles
+		Completed: "¡{0} terminado!"
+	}
+}
+
+Difficulty: {
+	classic: Solo en modo clásico/normal
+	expert: "[c/eb9b34:Solo en modo experto]"
+	master: "[c/0000FF:Solo en modo maestro]"
+	mod_custom: "[c/00A5FF:{0}, en modo {1}]"
+}
+
+Acquisition: {
+	LifeCrystal: Se encuentra en la capa subterránea o aún más profunda.
+	LifeFruit:
+		'''
+		Se encuentra en la capa subterránea y en las cavernas de la jungla, en el modo difícil.
+		Solo crecen luego de derrotar a un jefe mecánico.
+		'''
+	ManaCrystal: Elaborado a partir de 5 estrellas fugaces.
+	ArtisanLoaf:
+		'''
+		Vendido por el [c/f4d58d:mercader esquelético], durante las fases de luna creciente, luna nueva y luna menguante.
+		Una vez consumido, el mercader deja de venderlo.
+		El [c/f4d58d:mercader esquelético] se encuentra en la capa de la caverna.
+		'''
+	TorchGodsFavor:
+		'''
+		Se obtiene una vez que [c/f4d58d:El Dios antorcha] ha sido derrotado.
+		Para invocarlo, coloca 101 antorchas en un área reducida, en la capa subterránea o cavernas,
+		para luego esquivar todos los proyectiles hasta que termina el evento.
+		'''
+	VitalCrystal: Arroja un [c/f4d58d:cristal de vida] al [c/ed00ff:fulgor].
+	AegisFruit: Arroja una [c/f4d58d:fruta de la vida] al [c/ed00ff:fulgor].
+	ArcaneCrystal: Arroja un [c/f4d58d:cristal de maná] al [c/ed00ff:fulgor].
+	Ambrosia: Arroja cualquier tipo de fruta al [c/ed00ff:fulgor].
+	GummyWorm:
+		'''
+		Arroja un [c/f4d58d:gusano dorado] al [c/ed00ff:fulgor].
+		El [c/f4d58d:gusano dorado] tiene una probabilidad de 0,25 de aparecer, en lugar de uno normal.
+		'''
+	GalaxyPearl:
+		'''
+		Arroja una [c/f4d58d:perla rosa] al [c/ed00ff:fulgor].
+		Las probabilidades de adquirir una [c/f4d58d:perla rosa] al abrir una [c/f4d58d:ostra] son del 1,33%.
+		'''
+	DemonHeart:
+		'''
+		Obtenido al abrir la bolsa del tesoro,
+		que es dejado después de derrotar al [c/d84237:muro carnoso].
+		'''
+	MinecartUpgradeKit:
+		'''
+		Combina las siguientes piezas mecánicas que se encuentran en las [c/f4d58d:bolsas del tesoro]:
+		Pieza de rueda mecánica (Los gemelos)
+		Pieza de vagoneta mecánica (El destructor)
+		Pieza de batería mecánica (Esqueletrón mayor)
+		'''
+	AdvCombatTech1: Pesca durante la [c/d84237:luna de sangre].
+	AdvCombatTech2:
+		'''
+		Arroja un [c/f4d58d:tomo encantado] al [c/ed00ff:fulgor].
+		El [c/f4d58d:tomo encantado] es vendido por el [c/f4d58d:Mago].
+		'''
+	PeddlersSatchel:
+		'''
+		Arroja el [c/f4d58d:sombrero de vendedor ambulante] al [c/ed00ff:fulgor].
+		El [c/f4d58d:sombrero de vendedor ambulante], se puede obtener al matar al [c/f4d58d:mercader ambulante].
+		'''
+}
